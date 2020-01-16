@@ -2,6 +2,7 @@ package com.example.core_modules.reader;
 
 import com.example.core_modules.exception.UnsupportedFileFormatException;
 import com.example.core_modules.model.log.LogModel;
+import com.example.core_modules.model.structure.Pair;
 import com.example.core_modules.reader.converter.LogStringToModelConverter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,10 +41,10 @@ public final class ZipFileReader extends FileReader {
                 InputStream stream = zipFile.getInputStream(zipEntry);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
-                List<String> logsString = logFileReader.readByPath(reader);
+                List<Pair<String, String>> logsString = logFileReader.readByPath(reader);
 
-                for (String log : logsString) {
-                    logModelList.add(LogStringToModelConverter.convert(log));
+                for (Pair<String, String> log : logsString) {
+                    logModelList.add(LogStringToModelConverter.convert(log.getFirst(), log.getSecond()));
                 }
             }
         } catch (UnsupportedFileFormatException e1) {
