@@ -62,13 +62,18 @@ public class ReportGenerator {
         log.info("Report [4/10]: Inserting data to the report...");
         for (LogModel model : logModelSet) {
             Row row = sheet.createRow(rowNum++);
+            row.setHeightInPoints(60);
             buildReportRows(dateCellStyle, alignmentCenter, alignmentLeft, model, row);
         }
 
-        log.info("Report [5/10]: Resizing columns... turned off because of performance issues.");
-//        for (int i = 0; i < ReportColumn.values().length; i++) {
-//            sheet.autoSizeColumn(i);
-//        }
+        log.info("Report [5/10]: Resizing columns... ");
+        sheet.setColumnWidth(ReportColumn.STATUS.getOrderNumber(), 3750);
+        sheet.setColumnWidth(ReportColumn.EVENT_ID.getOrderNumber(), 20000);
+        sheet.setColumnWidth(ReportColumn.STAT.getOrderNumber(), 3750);
+        sheet.setColumnWidth(ReportColumn.MESSAGE.getOrderNumber(), 30000);
+        sheet.setColumnWidth(ReportColumn.FIRST_OCCURRENCE_TIME.getOrderNumber(), 7500);
+        sheet.setColumnWidth(ReportColumn.LAST_OCCURRENCE_TIME.getOrderNumber(), 7500);
+        sheet.setColumnWidth(ReportColumn.APPLICATION.getOrderNumber(), 4000);
 
         log.info("Report [6/10]: Setting up auto filters...");
         sheet.setAutoFilter(
@@ -80,13 +85,8 @@ public class ReportGenerator {
 
 
         log.info("Report [7/10]: Setting up possible values for statuses...");
-        XSSFDataValidationHelper h = new XSSFDataValidationHelper((XSSFSheet) sheet);
-        DataValidationConstraint dvConstraint = h.createExplicitListConstraint(new String[]{"OPEN", "IN-PROGRESS", "CLOSED"});
-        CellRangeAddressList addressList = new CellRangeAddressList(1, logModelSet.size(), 1, 1);
-        DataValidation validation = h.createValidation(dvConstraint, addressList);
-        validation.setEmptyCellAllowed(false);
-        validation.setShowErrorBox(true);
-        sheet.addValidationData(validation);
+        setStatusValidationOnColumn(ReportColumn.STATUS.getOrderNumber(), logModelSet.size(), sheet);
+        setStatusValidationOnColumn(ReportColumn.STAT.getOrderNumber(), logModelSet.size(), sheet);
 
 
         log.info("Report [8/10]: Creating report 'xlsx' file...");
@@ -103,6 +103,16 @@ public class ReportGenerator {
             SystemExiter.getInstance().exitWithError();
         }
         log.info("Report [10/10]: Report has been successfully generated!");
+    }
+
+    private void setStatusValidationOnColumn(int column, int collectionSize, Sheet sheet) {
+        XSSFDataValidationHelper h = new XSSFDataValidationHelper((XSSFSheet) sheet);
+        DataValidationConstraint dvConstraint = h.createExplicitListConstraint(new String[]{"OPEN", "IN-PROGRESS", "CLOSED"});
+        CellRangeAddressList addressList1 = new CellRangeAddressList(1, collectionSize, column, column);
+        DataValidation validation = h.createValidation(dvConstraint, addressList1);
+        validation.setEmptyCellAllowed(false);
+        validation.setShowErrorBox(true);
+        sheet.addValidationData(validation);
     }
 
     private CellStyle getHeaderCellStyle(Workbook workbook) {
@@ -125,6 +135,10 @@ public class ReportGenerator {
         final Cell statusCell = row.createCell(ReportColumn.STATUS.getOrderNumber());
         statusCell.setCellValue("OPEN");
         statusCell.setCellStyle(alignmentCenter);
+
+        final Cell statCell = row.createCell(ReportColumn.STAT.getOrderNumber());
+        statCell.setCellValue("OPEN");
+        statCell.setCellStyle(alignmentCenter);
 
         final Cell whoCell = row.createCell(ReportColumn.WHO.getOrderNumber());
         whoCell.setCellStyle(alignmentCenter);
@@ -167,10 +181,10 @@ public class ReportGenerator {
     }
 
     private CellStyle getCellAlignmentStyle(Workbook workbook, HorizontalAlignment center) {
-        CellStyle alignmentCenter = workbook.createCellStyle();
-        alignmentCenter.setAlignment(center);
-        alignmentCenter.setVerticalAlignment(VerticalAlignment.TOP);
-        return alignmentCenter;
+        CellStyle alignment = workbook.createCellStyle();
+        alignment.setAlignment(center);
+        alignment.setVerticalAlignment(VerticalAlignment.TOP);
+        return alignment;
     }
 
     private CellStyle getCellDateCellStyle(Workbook workbook, CreationHelper helper) {

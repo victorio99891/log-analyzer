@@ -35,20 +35,20 @@ public class LogStringToModelConverter {
      * 6 - END DELIMITER
      * 7 - STACK TRACE
      *
-     * @param logString log representation by stringm
+     * @param parsedString log representation by stringm
      * @return converted object which represents
      * @throws ParseException when DATE_AND_TIME cannot be parsed
      * @see com.example.core_modules.model.log.LogStructure
      */
-    public static LogModel convert(String logString) throws ParseException {
+    public static LogModel convert(String parsedString, String originalString) throws ParseException {
         //TODO: Keep original log and pass it as message
-        List<String> tokenList = tokenizeLog(logString);
+        List<String> tokenList = tokenizeLog(parsedString);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(LogModel.DATE_TIME_PATTERN);
 
         LogType logType = resolveLogType(getSection(tokenList, LogStructure.LOG_TYPE));
         DateTime dateTime = new DateTime(simpleDateFormat.parse(getSection(tokenList, LogStructure.DATE_AND_TIME)));
 
-        String message = logString;
+        String message = originalString;
 
         if (message != null && message.length() >= 32750) {
             message = message.substring(0, 32750);
