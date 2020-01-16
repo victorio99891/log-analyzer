@@ -1,0 +1,36 @@
+/target/
+/cmd/
+!.mvn/wrapper/maven-wrapper.jar
+
+##IGNORE LOCAL CONFIG
+/src/main/resources/application.yml
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+*.json
+*.xls
+*.xlsx
+
+src/main/java/com/example/TestKlass.java
+
+### NetBeans ###
+/nbproject/private/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+.DS_Store
