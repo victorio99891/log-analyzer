@@ -40,8 +40,7 @@ public class LogStringToModelConverter {
      * @throws ParseException when DATE_AND_TIME cannot be parsed
      * @see com.example.core_modules.model.log.LogStructure
      */
-    public static LogModel convert(String parsedString, String originalString) throws ParseException {
-        //TODO: Keep original log and pass it as message
+    public static LogModel convert(String parsedString, String originalString, String fileName) throws ParseException {
         List<String> tokenList = tokenizeLog(parsedString);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(LogModel.DATE_TIME_PATTERN);
 
@@ -54,13 +53,12 @@ public class LogStringToModelConverter {
             message = message.substring(0, 32750);
         }
         //TODO Origin should be the path to place where current log appears for the first time
-        //TODO Message should keep the original log file without any changes and additional signs
         return new LogModel(
                 null,
                 logType,
                 dateTime,
                 dateTime,
-                tokenList.get(LogStructure.ORIGIN.section()),
+                fileName,
                 tokenList.get(LogStructure.DETAILS.section()),
                 message
         );

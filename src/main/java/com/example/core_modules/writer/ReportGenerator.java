@@ -56,6 +56,7 @@ public class ReportGenerator {
         CellStyle dateCellStyle = getCellDateCellStyle(workbook, helper);
         CellStyle alignmentCenter = getCellAlignmentStyle(workbook, HorizontalAlignment.CENTER);
         CellStyle alignmentLeft = getCellAlignmentStyle(workbook, HorizontalAlignment.LEFT);
+        alignmentLeft.setWrapText(true);
 
         int rowNum = 1;
 
@@ -74,13 +75,14 @@ public class ReportGenerator {
         sheet.setColumnWidth(ReportColumn.FIRST_OCCURRENCE_TIME.getOrderNumber(), 7500);
         sheet.setColumnWidth(ReportColumn.LAST_OCCURRENCE_TIME.getOrderNumber(), 7500);
         sheet.setColumnWidth(ReportColumn.APPLICATION.getOrderNumber(), 4000);
+        sheet.setColumnWidth(ReportColumn.ORIGIN_FILE.getOrderNumber(), 22000);
 
         log.info("Report [6/10]: Setting up auto filters...");
         sheet.setAutoFilter(
                 CellRangeAddress.valueOf(
                         ReportColumn.LINE.getHeaderCellAddress() +
                                 ":" +
-                                ReportColumn.OBJECT.getHeaderCellAddress())
+                                ReportColumn.ORIGIN_FILE.getHeaderCellAddress())
         );
 
 
@@ -178,6 +180,10 @@ public class ReportGenerator {
         final Cell counterCell = row.createCell(ReportColumn.COUNT.getOrderNumber());
         counterCell.setCellValue(model.getOccurrences());
         counterCell.setCellStyle(alignmentCenter);
+
+        final Cell originCell = row.createCell(ReportColumn.ORIGIN_FILE.getOrderNumber());
+        originCell.setCellValue(model.getOrigin());
+        originCell.setCellStyle(alignmentCenter);
     }
 
     private CellStyle getCellAlignmentStyle(Workbook workbook, HorizontalAlignment center) {

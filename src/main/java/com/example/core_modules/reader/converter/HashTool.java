@@ -35,6 +35,8 @@ public class HashTool {
     }
 
     String hash(String text) {
+        //TODO Think about REGEX or something in case where you have logs with something like
+        // addreses as @73sd73 and in other log @98a8d -> in this case hashes will be different
         String edited = text;
         edited = edited.replaceAll("\\s+", "");
         edited = edited.replaceAll("\\d", "X");

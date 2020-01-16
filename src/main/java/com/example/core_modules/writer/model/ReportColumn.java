@@ -17,7 +17,8 @@ public enum ReportColumn {
     // Default value: Calypso BO
     APPLICATION(11, "APPLICATION", "L1"),
     COUNT(12, "COUNT", "M1"),
-    OBJECT(13, "OBJECT", "N1");
+    OBJECT(13, "OBJECT", "N1"),
+    ORIGIN_FILE(14, "ORIGIN FILE", "O1");
 
 
     private int orderNumber;

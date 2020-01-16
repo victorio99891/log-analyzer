@@ -27,8 +27,7 @@ public final class LogFileReader extends FileReader {
             List<Pair<String, String>> logsString = readByPath(reader);
 
             for (Pair<String, String> log : logsString) {
-                //TODO Keep the original path to file
-                logModelList.add(LogStringToModelConverter.convert(log.getFirst(), log.getSecond()));
+                logModelList.add(LogStringToModelConverter.convert(log.getFirst(), log.getSecond(), path));
             }
 
         } catch (UnsupportedFileFormatException e1) {
@@ -44,8 +43,6 @@ public final class LogFileReader extends FileReader {
 
 
     public List<Pair<String, String>> readByPath(BufferedReader reader) throws IOException {
-        //TODO CHANGE THIS List<String> to Pair construction Pair<String, List<String>> where String is original text
-        // and List<String> is the same as has been
         List<Pair<String, String>> logs = new ArrayList<>();
         String line;
         StringBuilder builder = null;

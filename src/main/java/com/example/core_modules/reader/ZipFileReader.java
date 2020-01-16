@@ -44,7 +44,7 @@ public final class ZipFileReader extends FileReader {
                 List<Pair<String, String>> logsString = logFileReader.readByPath(reader);
 
                 for (Pair<String, String> log : logsString) {
-                    logModelList.add(LogStringToModelConverter.convert(log.getFirst(), log.getSecond()));
+                    logModelList.add(LogStringToModelConverter.convert(log.getFirst(), log.getSecond(), path));
                 }
             }
         } catch (UnsupportedFileFormatException e1) {
