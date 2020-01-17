@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -43,8 +44,9 @@ public final class ZipFileReader extends FileReader {
 
                 List<Pair<String, String>> logsString = logFileReader.readByPath(reader);
 
+
                 for (Pair<String, String> log : logsString) {
-                    logModelList.add(LogStringToModelConverter.convert(log.getFirst(), log.getSecond(), path));
+                    logModelList.add(LogStringToModelConverter.convert(log.getFirst(), log.getSecond(), Paths.get(path).getFileName().toString()));
                 }
             }
         } catch (UnsupportedFileFormatException e1) {

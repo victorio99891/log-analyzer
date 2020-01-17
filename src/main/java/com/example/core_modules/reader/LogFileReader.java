@@ -7,6 +7,7 @@ import com.example.core_modules.reader.converter.LogStringToModelConverter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +23,13 @@ public final class LogFileReader extends FileReader {
         try {
             super.checkIfLogFileOnPath(path);
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(path))));
+            File file = new File(path);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 
             List<Pair<String, String>> logsString = readByPath(reader);
 
             for (Pair<String, String> log : logsString) {
-                logModelList.add(LogStringToModelConverter.convert(log.getFirst(), log.getSecond(), path));
+                logModelList.add(LogStringToModelConverter.convert(log.getFirst(), log.getSecond(), Paths.get(path).getFileName().toString()));
             }
 
         } catch (UnsupportedFileFormatException e1) {

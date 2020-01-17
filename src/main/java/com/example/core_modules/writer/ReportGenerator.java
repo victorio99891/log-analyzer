@@ -75,7 +75,7 @@ public class ReportGenerator {
         sheet.setColumnWidth(ReportColumn.FIRST_OCCURRENCE_TIME.getOrderNumber(), 7500);
         sheet.setColumnWidth(ReportColumn.LAST_OCCURRENCE_TIME.getOrderNumber(), 7500);
         sheet.setColumnWidth(ReportColumn.APPLICATION.getOrderNumber(), 4000);
-        sheet.setColumnWidth(ReportColumn.ORIGIN_FILE.getOrderNumber(), 22000);
+        sheet.setColumnWidth(ReportColumn.ORIGIN_FILE.getOrderNumber(), 12000);
 
         log.info("Report [6/10]: Setting up auto filters...");
         sheet.setAutoFilter(
