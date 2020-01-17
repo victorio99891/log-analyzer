@@ -1,9 +1,11 @@
 package com.example.core_modules.reader.converter;
 
+import com.example.core_modules.config.GlobalConfigurationHandler;
 import com.example.core_modules.model.log.LogModel;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HashTool {
@@ -38,6 +40,13 @@ public class HashTool {
         //TODO Think about REGEX or something in case where you have logs with something like
         // addreses as @73sd73 and in other log @98a8d -> in this case hashes will be different
         String edited = text;
+        List<String> regexFilterList = GlobalConfigurationHandler.getInstance()
+                .config()
+                .getRegexFilterList();
+
+        for (String regex : regexFilterList) {
+//             edited = edited.replaceAll(regex, "#REGEX#");
+        }
         edited = edited.replaceAll("\\s+", "");
         edited = edited.replaceAll("\\d", "X");
 

@@ -7,6 +7,7 @@ import com.example.cli.exception.CliCommandWrongMethodCombinationException;
 import com.example.cli.flow.FlowResolver;
 import com.example.cli.flow.SystemExiter;
 import com.example.cli.model.CliCommand;
+import com.example.core_modules.config.GlobalConfigurationHandler;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -47,6 +48,7 @@ public class RunnerCLI {
 
         Map<CliCommand, String> commandsToExecute = resolveCommandsFromUserInput(args);
         validatePassedCommands(commandsToExecute);
+        GlobalConfigurationHandler.init();
         flowResolver.resolve(commandsToExecute);
     }
 

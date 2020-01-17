@@ -92,7 +92,7 @@ public class ReportGenerator {
 
 
         log.info("Report [8/10]: Creating report 'xlsx' file...");
-        FileOutputStream fileOut = null;
+        FileOutputStream fileOut;
         try {
             log.info("Report [9/10]: Trying to save created file...");
             DateTimeFormatter formatter = DateTimeFormat.forPattern(DATE_TIME_PATTERN);
