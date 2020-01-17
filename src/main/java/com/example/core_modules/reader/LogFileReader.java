@@ -53,13 +53,13 @@ public final class LogFileReader extends FileReader {
 
             if (line.contains(LogModel.LOG_START_DELIMITER)) {
                 if (builder != null) {
-                    logs.add(new Pair(builder.toString(), originalLog));
+                    logs.add(new Pair<>(builder.toString(), originalLog));
                 }
                 builder = new StringBuilder();
                 originalLog = "";
                 builder.append(line);
                 builder.append("|");
-                originalLog = originalLog + line;
+                originalLog = originalLog.concat(line);
             }
 
             if (builder != null && !line.contains(LogModel.LOG_START_DELIMITER)) {
@@ -67,12 +67,13 @@ public final class LogFileReader extends FileReader {
                 if (line.equals(LogModel.LOG_END_DELIMITER)) {
                     builder.append("|");
                     builder.append(line);
-                    originalLog = originalLog + "\n" + line;
                 } else {
                     builder.append(line);
                     builder.append("\r\n");
-                    originalLog = originalLog + "\n" + line;
                 }
+
+                originalLog = originalLog.concat("\n").concat(line);
+
                 if (line.contains(LogModel.LOG_END_DELIMITER)) {
                     builder.append("|");
                 }
@@ -80,7 +81,7 @@ public final class LogFileReader extends FileReader {
         }
 
         if (builder != null && !builder.toString().trim().isEmpty()) {
-            logs.add(new Pair(builder.toString(), originalLog));
+            logs.add(new Pair<>(builder.toString(), originalLog));
         }
 
         return logs;

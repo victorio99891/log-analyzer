@@ -35,7 +35,7 @@ public class LogStringToModelConverter {
      * 6 - END DELIMITER
      * 7 - STACK TRACE
      *
-     * @param parsedString log representation by stringm
+     * @param parsedString log representation by string
      * @return converted object which represents
      * @throws ParseException when DATE_AND_TIME cannot be parsed
      * @see com.example.core_modules.model.log.LogStructure
