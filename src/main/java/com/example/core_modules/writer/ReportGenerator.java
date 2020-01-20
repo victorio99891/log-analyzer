@@ -51,6 +51,7 @@ public class ReportGenerator {
             cell.setCellValue(ReportColumn.getByOrderName(i).getName());
             cell.setCellStyle(headerCellStyle);
         }
+        sheet.createFreezePane(0, 1);
 
         log.info("Report [3/10]: Creating cell styles... ");
         CellStyle dateCellStyle = getCellDateCellStyle(workbook, helper);
