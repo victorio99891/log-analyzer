@@ -47,16 +47,16 @@ public class Analyzer {
         return new HashMap<>();
     }
 
-    public Map<String, LogModel> analyzeWithoutTimeSpecified(String path) {
+    public Map<String, LogModel> analyzeWithoutTimeSpecified(String path, boolean isRegexActive) {
         Map<String, LogModel> logModelMap = loadLogsFromHistoryJSON();
         HashTool hashTool = new HashTool(logModelMap);
         Set<FilePath> paths = DirectoryExplorer.exploreEndDir(path);
-        generateHistoryJSON(logModelMap, hashTool, paths);
+        generateHistoryJSON(logModelMap, hashTool, paths, isRegexActive);
 
         return logModelMap;
     }
 
-    public Map<String, LogModel> analyzeWithTimeSpecified(String path, String dateFrom, String dateTo) {
+    public Map<String, LogModel> analyzeWithTimeSpecified(String path, String dateFrom, String dateTo, boolean isRegexActive) {
 
         try {
             DateTime dateTimeFrom = resolveDateFromString(dateFrom);
@@ -75,7 +75,7 @@ public class Analyzer {
                 paths = resolveFilesAtCorrectTimeIntervals(paths, dateTimeFrom, dateTimeTo);
 
                 // FILL-UP THE HISTORY
-                generateHistoryJSON(logModelMap, hashTool, paths);
+                generateHistoryJSON(logModelMap, hashTool, paths, isRegexActive);
 
                 // FILTER BY DATES
                 // logModelMap = filterHistoryLogsByDates(logModelMap, dateTimeFrom, dateTimeTo);
@@ -206,20 +206,20 @@ public class Analyzer {
         return dateTime;
     }
 
-    void generateHistoryJSON(Map<String, LogModel> logModelMap, HashTool hashTool, Set<FilePath> paths) {
+    void generateHistoryJSON(Map<String, LogModel> logModelMap, HashTool hashTool, Set<FilePath> paths, boolean isRegexActive) {
         for (FilePath path1 : paths) {
             List<LogModel> readLogsList = null;
             if (FileExtension.LOG.equals(path1.getExtension())) {
                 readLogsList = logFileReader.read(path1.getFullPath());
                 log.info("[LOG FILE] Found " + readLogsList.size() + " ERROR or FATAL logs in file: " + path1.getFullPath());
                 for (LogModel model : readLogsList) {
-                    hashTool.generateHash(model);
+                    hashTool.generateHash(model, isRegexActive);
                 }
             } else if (FileExtension.ZIP.equals(path1.getExtension())) {
                 readLogsList = zipFileReader.read(path1.getFullPath());
                 log.info("[ZIP FILE] Found " + readLogsList.size() + " ERROR or FATAL logs in file: " + path1.getFullPath());
                 for (LogModel model : readLogsList) {
-                    hashTool.generateHash(model);
+                    hashTool.generateHash(model, isRegexActive);
                 }
             }
         }

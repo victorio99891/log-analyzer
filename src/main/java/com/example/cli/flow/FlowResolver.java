@@ -22,7 +22,8 @@ public class FlowResolver {
                 !commandsToExecute.containsKey(CliCommand.DATE_FROM) &&
                 !commandsToExecute.containsKey(CliCommand.DATE_TO)) {
             logModelMap = analyzer.analyzeWithoutTimeSpecified(
-                    commandsToExecute.get(CliCommand.DIRECTORY_PATH)
+                    commandsToExecute.get(CliCommand.DIRECTORY_PATH),
+                    commandsToExecute.containsKey(CliCommand.REGEX_FILTER)
             );
             if (commandsToExecute.containsKey(CliCommand.REPORT)) {
                 reportGenerator.generateReport(new HashSet<>(logModelMap.values()));
@@ -35,7 +36,8 @@ public class FlowResolver {
             logModelMap = analyzer.analyzeWithTimeSpecified(
                     commandsToExecute.get(CliCommand.DIRECTORY_PATH),
                     commandsToExecute.get(CliCommand.DATE_FROM),
-                    null
+                    null,
+                    commandsToExecute.containsKey(CliCommand.REGEX_FILTER)
             );
             if (commandsToExecute.containsKey(CliCommand.REPORT)) {
                 reportGenerator.generateReport(new HashSet<>(logModelMap.values()));
@@ -48,7 +50,8 @@ public class FlowResolver {
             logModelMap = analyzer.analyzeWithTimeSpecified(
                     commandsToExecute.get(CliCommand.DIRECTORY_PATH),
                     null,
-                    commandsToExecute.get(CliCommand.DATE_TO)
+                    commandsToExecute.get(CliCommand.DATE_TO),
+                    commandsToExecute.containsKey(CliCommand.REGEX_FILTER)
             );
             if (commandsToExecute.containsKey(CliCommand.REPORT)) {
                 reportGenerator.generateReport(new HashSet<>(logModelMap.values()));
@@ -61,7 +64,8 @@ public class FlowResolver {
             logModelMap = analyzer.analyzeWithTimeSpecified(
                     commandsToExecute.get(CliCommand.DIRECTORY_PATH),
                     commandsToExecute.get(CliCommand.DATE_FROM),
-                    commandsToExecute.get(CliCommand.DATE_TO)
+                    commandsToExecute.get(CliCommand.DATE_TO),
+                    commandsToExecute.containsKey(CliCommand.REGEX_FILTER)
             );
             if (commandsToExecute.containsKey(CliCommand.REPORT)) {
                 reportGenerator.generateReport(new HashSet<>(logModelMap.values()));

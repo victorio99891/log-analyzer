@@ -29,7 +29,13 @@ public enum CliCommand {
     REPORT("Generate report",
             "--report",
             false,
-            "Generates Excel report file.");
+            "Generates Excel report file."),
+    REGEX_FILTER(
+            "Regex filtration",
+            "--regex",
+            false,
+            "During analysis all logs are filtered by given regular expressions from Global Configuration JSON. Founded matches are replaced with #REGEX# tag."
+    );
     private String name;
     private String flag;
     private boolean hasArgument;
