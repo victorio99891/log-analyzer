@@ -11,5 +11,6 @@ import java.util.List;
 @ToString
 @Getter
 public class ConfigurationModel {
+    private String logDelimiterPattern;
     private List<String> regexFilterList = new ArrayList<>();
 }

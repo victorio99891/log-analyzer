@@ -109,7 +109,7 @@ public class ReportGenerator {
 
     private void setStatusValidationOnColumn(int column, int collectionSize, Sheet sheet) {
         XSSFDataValidationHelper h = new XSSFDataValidationHelper((XSSFSheet) sheet);
-        DataValidationConstraint dvConstraint = h.createExplicitListConstraint(new String[]{"OPEN", "IN-PROGRESS", "CLOSED"});
+        DataValidationConstraint dvConstraint = h.createExplicitListConstraint(new String[]{"OPEN", "IN-PROGRESS", "CLOSED", "IGNORE"});
         CellRangeAddressList addressList1 = new CellRangeAddressList(1, collectionSize, column, column);
         DataValidation validation = h.createValidation(dvConstraint, addressList1);
         validation.setEmptyCellAllowed(false);

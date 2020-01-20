@@ -50,9 +50,6 @@ public class HashTool {
         edited = edited.replaceAll("\\s+", "");
         edited = edited.replaceAll("\\d", "X");
 
-//        return Hashing.sha256()
-//                .hashString(edited, StandardCharsets.UTF_8)
-//                .toString();
         return DigestUtils.sha256Hex(edited);
     }
 }

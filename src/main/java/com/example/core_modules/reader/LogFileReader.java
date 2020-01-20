@@ -1,5 +1,6 @@
 package com.example.core_modules.reader;
 
+import com.example.core_modules.config.GlobalConfigurationHandler;
 import com.example.core_modules.exception.UnsupportedFileFormatException;
 import com.example.core_modules.model.log.LogModel;
 import com.example.core_modules.model.structure.Pair;
@@ -45,6 +46,7 @@ public final class LogFileReader extends FileReader {
 
 
     public List<Pair<String, String>> readByPath(BufferedReader reader) throws IOException {
+        String delimiter = GlobalConfigurationHandler.getInstance().config().getLogDelimiterPattern();
         List<Pair<String, String>> logs = new ArrayList<>();
         String line;
         StringBuilder builder = null;
@@ -57,15 +59,17 @@ public final class LogFileReader extends FileReader {
                 }
                 builder = new StringBuilder();
                 originalLog = "";
-                builder.append(line);
-                builder.append("|");
                 originalLog = originalLog.concat(line);
+                // Replace all pipe characters in first line into delimiter defined in global config.
+                line = line.replaceAll("\\|", delimiter);
+                builder.append(line);
+                builder.append(delimiter);
             }
 
             if (builder != null && !line.contains(LogModel.LOG_START_DELIMITER)) {
 
                 if (line.equals(LogModel.LOG_END_DELIMITER)) {
-                    builder.append("|");
+                    builder.append(delimiter);
                     builder.append(line);
                 } else {
                     builder.append(line);
@@ -75,7 +79,7 @@ public final class LogFileReader extends FileReader {
                 originalLog = originalLog.concat("\n").concat(line);
 
                 if (line.contains(LogModel.LOG_END_DELIMITER)) {
-                    builder.append("|");
+                    builder.append(delimiter);
                 }
             }
         }

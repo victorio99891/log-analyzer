@@ -1,5 +1,6 @@
 {
-  "regexFilterList" : [
+  "logDelimiterPattern": "*#-!-#*",
+  "regexFilterList": [
     "@[\\D\\d]*[\\d]"
   ]
 }

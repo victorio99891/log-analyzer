@@ -1,5 +1,6 @@
 package com.example.core_modules.reader.converter;
 
+import com.example.core_modules.config.GlobalConfigurationHandler;
 import com.example.core_modules.model.log.LogModel;
 import com.example.core_modules.model.log.LogStructure;
 import com.example.core_modules.model.log.LogType;
@@ -52,7 +53,6 @@ public class LogStringToModelConverter {
         if (message != null && message.length() >= 32750) {
             message = message.substring(0, 32750);
         }
-        //TODO Origin should be the path to place where current log appears for the first time
         return new LogModel(
                 null,
                 logType,
@@ -66,7 +66,8 @@ public class LogStringToModelConverter {
 
     private static List<String> tokenizeLog(String logString) {
         //TODO: Think about the delimiter sign or combination
-        StringTokenizer tokenizer = new StringTokenizer(logString, "|");
+        String delimiter = GlobalConfigurationHandler.getInstance().config().getLogDelimiterPattern();
+        StringTokenizer tokenizer = new StringTokenizer(logString, delimiter);
 
         List<String> tokenList = new ArrayList<>();
         while (tokenizer.hasMoreTokens()) {

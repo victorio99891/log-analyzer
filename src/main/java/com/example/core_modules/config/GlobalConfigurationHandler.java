@@ -43,6 +43,10 @@ public class GlobalConfigurationHandler {
 
     private static void validateConfiguration(ConfigurationModel model) throws GlobalConfigurationNotValidException {
 
+        if (model.getLogDelimiterPattern() == null || model.getLogDelimiterPattern().trim().isEmpty()) {
+            throw new GlobalConfigurationNotValidException("Setting: 'logFileDelimiterPattern' - cannot be null or empty in GlobalConfiguration.json !!!");
+        }
+
         log.info("Settings are successfully initialized.");
     }
 
