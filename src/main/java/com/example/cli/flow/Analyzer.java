@@ -1,5 +1,6 @@
 package com.example.cli.flow;
 
+import com.example.core_modules.config.GlobalConfigurationHandler;
 import com.example.core_modules.explorer.DirectoryExplorer;
 import com.example.core_modules.model.file.FileExtension;
 import com.example.core_modules.model.file.FilePath;
@@ -34,8 +35,32 @@ public class Analyzer {
 
             log.info("Trying to load JSON history file...");
 
-            Map<String, LogModel> mapForJson = mapper.readValue(new File("LogHistory.json"), new TypeReference<HashMap<String, LogModel>>() {
-            });
+            Map<String, LogModel> mapForJson = mapper.readValue(
+                    new File(GlobalConfigurationHandler.getInstance().config().getUnfilteredHistoryName()),
+                    new TypeReference<HashMap<String, LogModel>>() {
+                    });
+
+            log.info("History JSON successfully loaded. (Number of records: " + mapForJson.size() + ")");
+
+            return mapForJson;
+
+        } catch (IOException e) {
+            log.info("History JSON not available.");
+        }
+        return new HashMap<>();
+    }
+
+    public static Map<String, LogModel> loadJsonRegexHistoryFile() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JodaModule());
+        try {
+
+            log.info("Trying to load JSON history (regex filtered) file...");
+
+            Map<String, LogModel> mapForJson = mapper.readValue(
+                    new File(GlobalConfigurationHandler.getInstance().config().getRegexFilteredHistoryName()),
+                    new TypeReference<HashMap<String, LogModel>>() {
+                    });
 
             log.info("History JSON successfully loaded. (Number of records: " + mapForJson.size() + ")");
 
@@ -48,9 +73,9 @@ public class Analyzer {
     }
 
     public Map<String, LogModel> analyzeWithoutTimeSpecified(String path, boolean isRegexActive) {
-        Map<String, LogModel> logModelMap = loadLogsFromHistoryJSON();
+        Map<String, LogModel> logModelMap = loadLogsFromHistoryJSON(isRegexActive);
         HashTool hashTool = new HashTool(logModelMap);
-        Set<FilePath> paths = DirectoryExplorer.exploreEndDir(path);
+        Set<FilePath> paths = new DirectoryExplorer().exploreEndDir(new File(path));
         generateHistoryJSON(logModelMap, hashTool, paths, isRegexActive);
 
         return logModelMap;
@@ -67,10 +92,10 @@ public class Analyzer {
             log.debug("Passed date/dates is/are valid: " + isValid);
 
             if (isValid) {
-                Map<String, LogModel> logModelMap = loadLogsFromHistoryJSON();
+                Map<String, LogModel> logModelMap = loadLogsFromHistoryJSON(isRegexActive);
 
                 HashTool hashTool = new HashTool(logModelMap);
-                Set<FilePath> paths = DirectoryExplorer.exploreEndDir(path);
+                Set<FilePath> paths = new DirectoryExplorer().exploreEndDir(new File(path));
 
                 paths = resolveFilesAtCorrectTimeIntervals(paths, dateTimeFrom, dateTimeTo);
 
@@ -161,9 +186,13 @@ public class Analyzer {
         return filteredSet;
     }
 
-    Map<String, LogModel> loadLogsFromHistoryJSON() {
+    Map<String, LogModel> loadLogsFromHistoryJSON(boolean isRegexIsActive) {
         Map<String, LogModel> logModelMap;
-        logModelMap = loadJsonHistoryFile();
+        if (isRegexIsActive) {
+            logModelMap = loadJsonRegexHistoryFile();
+        } else {
+            logModelMap = loadJsonHistoryFile();
+        }
         return logModelMap;
     }
 
@@ -225,10 +254,18 @@ public class Analyzer {
         }
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
-        log.info("Rewriting the LogHistory.json file...");
+
         try {
-            mapper.writeValue(new File("LogHistory.json"), logModelMap);
-            log.info("Newer version of LogHistory.json has been successfully saved!");
+            if (isRegexActive) {
+                String fileName = GlobalConfigurationHandler.getInstance().config().getRegexFilteredHistoryName();
+                log.info("Rewriting the {} file...", fileName);
+                mapper.writeValue(new File(fileName), logModelMap);
+            } else {
+                String fileName = GlobalConfigurationHandler.getInstance().config().getUnfilteredHistoryName();
+                log.info("Rewriting the {} file...", fileName);
+                mapper.writeValue(new File(fileName), logModelMap);
+            }
+            log.info("Newer version of history has been successfully saved!");
         } catch (IOException e) {
             log.error(e.toString());
         }

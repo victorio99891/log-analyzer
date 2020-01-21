@@ -65,7 +65,6 @@ public class LogStringToModelConverter {
     }
 
     private static List<String> tokenizeLog(String logString) {
-        //TODO: Think about the delimiter sign or combination
         String delimiter = GlobalConfigurationHandler.getInstance().config().getLogDelimiterPattern();
         StringTokenizer tokenizer = new StringTokenizer(logString, delimiter);
 

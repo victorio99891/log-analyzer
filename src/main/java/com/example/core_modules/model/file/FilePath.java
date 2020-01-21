@@ -1,7 +1,6 @@
 package com.example.core_modules.model.file;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -10,7 +9,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 public class FilePath {
 
     private String name;
@@ -18,11 +16,7 @@ public class FilePath {
     private String fullPath;
     private String relativePath;
 
-    public FilePath(String name, FileExtension extension, String fullPath, String relativePath) {
-        this.name = name;
-        this.extension = extension;
-        this.fullPath = fullPath;
-        this.relativePath = relativePath;
+    public FilePath() {
     }
 
     @Override

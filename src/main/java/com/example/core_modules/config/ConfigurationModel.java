@@ -12,5 +12,7 @@ import java.util.List;
 @Getter
 public class ConfigurationModel {
     private String logDelimiterPattern;
+    private String regexFilteredHistoryName;
+    private String unfilteredHistoryName;
     private List<String> regexFilterList = new ArrayList<>();
 }

@@ -26,7 +26,8 @@ public class FlowResolver {
                     commandsToExecute.containsKey(CliCommand.REGEX_FILTER)
             );
             if (commandsToExecute.containsKey(CliCommand.REPORT)) {
-                reportGenerator.generateReport(new HashSet<>(logModelMap.values()));
+                reportGenerator.generateReport(new HashSet<>(logModelMap.values()),
+                        commandsToExecute.containsKey(CliCommand.REGEX_FILTER));
             }
         }
 
@@ -40,7 +41,8 @@ public class FlowResolver {
                     commandsToExecute.containsKey(CliCommand.REGEX_FILTER)
             );
             if (commandsToExecute.containsKey(CliCommand.REPORT)) {
-                reportGenerator.generateReport(new HashSet<>(logModelMap.values()));
+                reportGenerator.generateReport(new HashSet<>(logModelMap.values()),
+                        commandsToExecute.containsKey(CliCommand.REGEX_FILTER));
             }
         }
 
@@ -54,7 +56,8 @@ public class FlowResolver {
                     commandsToExecute.containsKey(CliCommand.REGEX_FILTER)
             );
             if (commandsToExecute.containsKey(CliCommand.REPORT)) {
-                reportGenerator.generateReport(new HashSet<>(logModelMap.values()));
+                reportGenerator.generateReport(new HashSet<>(logModelMap.values()),
+                        commandsToExecute.containsKey(CliCommand.REGEX_FILTER));
             }
         }
 
@@ -68,12 +71,13 @@ public class FlowResolver {
                     commandsToExecute.containsKey(CliCommand.REGEX_FILTER)
             );
             if (commandsToExecute.containsKey(CliCommand.REPORT)) {
-                reportGenerator.generateReport(new HashSet<>(logModelMap.values()));
+                reportGenerator.generateReport(new HashSet<>(logModelMap.values()),
+                        commandsToExecute.containsKey(CliCommand.REGEX_FILTER));
             }
         }
 
         if (commandsToExecute.containsKey(CliCommand.REPORT) && !commandsToExecute.containsKey(CliCommand.DIRECTORY_PATH)) {
-            reportGenerator.generateReportFromHistoryFile();
+            reportGenerator.generateReportFromHistoryFile(commandsToExecute.containsKey(CliCommand.REGEX_FILTER));
         }
     }
 

@@ -38,12 +38,14 @@ public class RunnerCLI {
 
 
     public void run(String[] args) {
-        System.out.println("===================================================");
-        System.out.println("               Log Analyzer v 0.1                  ");
-        System.out.println("===================================================");
+        log.info("===================================================");
+        log.info("               Log Analyzer v 0.1                  ");
+        log.info("===================================================");
 
         if (args.length == 0) {
-            System.out.println("Program cannot be run with empty arguments list. See '--help' flag for more information");
+            SystemExiter.getInstance()
+                    .exitWithError(
+                            new CliCommandArgumentException("Program cannot be run with empty arguments list. See '--help' flag for more information"));
         }
 
         Map<CliCommand, String> commandsToExecute = resolveCommandsFromUserInput(args);
@@ -56,8 +58,7 @@ public class RunnerCLI {
         try {
             CliCommand.validateCommandsCombination(commandsToExecute);
         } catch (CliCommandWrongMethodCombinationException e) {
-            log.error(e.toString(), e);
-            SystemExiter.getInstance().exitWithError();
+            SystemExiter.getInstance().exitWithError(e);
         }
     }
 
@@ -81,8 +82,7 @@ public class RunnerCLI {
                     commands.put(passed, null);
                 }
             } catch (CliCommandNotFoundException | CliCommandDoublePassedException | CliCommandArgumentException e) {
-                System.err.println(e.getMessage());
-                SystemExiter.getInstance().exitWithError();
+                SystemExiter.getInstance().exitWithError(e);
             }
         }
         return commands;

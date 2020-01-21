@@ -14,23 +14,17 @@ import java.util.Set;
 @Slf4j
 public final class DirectoryExplorer {
 
-    private DirectoryExplorer() {
-    }
-
     private static final String ERROR_LOG_FILE_PATTERN = "SysMonError";
 
-    public static Set<FilePath> exploreEndDir(String pathToDirectory) {
+    public Set<FilePath> exploreEndDir(File directory) {
         Set<FilePath> paths = new HashSet<>();
-        File directory;
 
         log.info("Resolving all paths in passed directory...");
 
         try {
-            if (pathToDirectory == null) {
+            if (directory == null) {
                 throw new NullPointerException("Specified directory path has 'null' value.");
             }
-
-            directory = new File(pathToDirectory);
 
             if (!directory.isDirectory()) {
                 throw new UnsupportedFileFormatException("Specified path doesn't points to the directory.");
@@ -56,7 +50,7 @@ public final class DirectoryExplorer {
         return paths;
     }
 
-    private static void searchForFiles(Set<FilePath> paths, File directory) {
+    private void searchForFiles(Set<FilePath> paths, File directory) {
         if (directory != null) {
             for (File file : Objects.requireNonNull(directory.listFiles())) {
                 if (file != null && file.isFile()) {
@@ -71,7 +65,7 @@ public final class DirectoryExplorer {
         }
     }
 
-    private static void addFilePath(Set<FilePath> paths, File file) {
+    private void addFilePath(Set<FilePath> paths, File file) {
         FilePath filePath = new FilePath();
         if (file.getName().contains(ERROR_LOG_FILE_PATTERN)) {
             filePath.setName(file.getName());
@@ -86,7 +80,7 @@ public final class DirectoryExplorer {
         }
     }
 
-    private static FileExtension extractExtensionFromFileName(String fileName) {
+    private FileExtension extractExtensionFromFileName(String fileName) {
         FileExtension toReturn = null;
         String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
 

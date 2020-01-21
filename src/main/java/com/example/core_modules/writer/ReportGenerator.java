@@ -3,6 +3,7 @@ package com.example.core_modules.writer;
 import com.example.cli.flow.Analyzer;
 import com.example.cli.flow.SystemExiter;
 import com.example.core_modules.model.log.LogModel;
+import com.example.core_modules.writer.exception.ReportGenerationException;
 import com.example.core_modules.writer.model.ReportColumn;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -22,20 +23,19 @@ import java.util.Set;
 
 @Slf4j
 public class ReportGenerator {
-
+    //TODO: [DONE] Add flag isRegexFiltered reprot.
     private static final String DATE_TIME_PATTERN = "yyyyMMddHHmm";
 
-    public void generateReportFromHistoryFile() {
+    public void generateReportFromHistoryFile(boolean isRegexFilteredReport) {
         log.info("Report: Loading of history file for report needs...");
-        final Set<LogModel> logModelSet = loadLogsFromHistoryFile();
-        generateReport(logModelSet);
+        final Set<LogModel> logModelSet = loadLogsFromHistoryFile(isRegexFilteredReport);
+        generateReport(logModelSet, isRegexFilteredReport);
     }
 
-    public void generateReport(Set<LogModel> logModelSet) {
+    public void generateReport(Set<LogModel> logModelSet, boolean isRegexFilteredReport) {
 
         if (logModelSet.isEmpty()) {
-            log.error("Report cannot be created because of empty log set. Check data validity.");
-            SystemExiter.getInstance().exitWithError();
+            SystemExiter.getInstance().exitWithError(new ReportGenerationException("Report cannot be created because of empty log set. Check data validity."));
         }
 
         log.info("Report [1/10]: Creating new sheet...");
@@ -97,13 +97,16 @@ public class ReportGenerator {
         try {
             log.info("Report [9/10]: Trying to save created file...");
             DateTimeFormatter formatter = DateTimeFormat.forPattern(DATE_TIME_PATTERN);
-            fileOut = new FileOutputStream("LogReport_" + formatter.print(DateTime.now()) + ".xlsx");
+            if (isRegexFilteredReport) {
+                fileOut = new FileOutputStream("LogReport_RegexFiltered_" + formatter.print(DateTime.now()) + ".xlsx");
+            } else {
+                fileOut = new FileOutputStream("LogReport_" + formatter.print(DateTime.now()) + ".xlsx");
+            }
             workbook.write(fileOut);
             fileOut.close();
             workbook.close();
         } catch (IOException e) {
-            e.printStackTrace();
-            SystemExiter.getInstance().exitWithError();
+            SystemExiter.getInstance().exitWithError(e);
         }
         log.info("Report [10/10]: Report has been successfully generated!");
     }
@@ -202,8 +205,12 @@ public class ReportGenerator {
         return dateCellStyle;
     }
 
-    private Set<LogModel> loadLogsFromHistoryFile() {
-        return new HashSet<>(Analyzer.loadJsonHistoryFile().values());
+    private Set<LogModel> loadLogsFromHistoryFile(boolean isRegexFilteredReport) {
+        if (isRegexFilteredReport) {
+            return new HashSet<>(Analyzer.loadJsonRegexHistoryFile().values());
+        } else {
+            return new HashSet<>(Analyzer.loadJsonHistoryFile().values());
+        }
     }
 
 

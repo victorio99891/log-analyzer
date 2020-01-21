@@ -27,10 +27,9 @@ public class GlobalConfigurationHandler {
                 validateConfiguration(config);
             } catch (IOException e) {
                 log.error("Global configuration file cannot be loaded.", e);
-                SystemExiter.getInstance().exitWithError();
+                SystemExiter.getInstance().exitWithError(e);
             } catch (GlobalConfigurationNotValidException e) {
-                log.error(e.getMessage());
-                SystemExiter.getInstance().exitWithError();
+                SystemExiter.getInstance().exitWithError(e);
             }
             instance = new GlobalConfigurationHandler();
         }
@@ -44,7 +43,19 @@ public class GlobalConfigurationHandler {
     private static void validateConfiguration(ConfigurationModel model) throws GlobalConfigurationNotValidException {
 
         if (model.getLogDelimiterPattern() == null || model.getLogDelimiterPattern().trim().isEmpty()) {
-            throw new GlobalConfigurationNotValidException("Setting: 'logFileDelimiterPattern' - cannot be null or empty in GlobalConfiguration.json !!!");
+            throw new GlobalConfigurationNotValidException("Setting: 'logFileDelimiterPattern' - cannot be null or empty.");
+        }
+
+        if (model.getRegexFilteredHistoryName() == null ||
+                !model.getRegexFilteredHistoryName().matches("([a-zA-Z0-9\\s_\\\\.\\-\\(\\):])+(.json)$") ||
+                model.getRegexFilteredHistoryName().trim().isEmpty()) {
+            throw new GlobalConfigurationNotValidException("Setting: 'regexFilteredHistoryName' - cannot be null or empty. Must has the *.json extension.");
+        }
+
+        if (model.getUnfilteredHistoryName() == null ||
+                !model.getUnfilteredHistoryName().matches("([a-zA-Z0-9\\s_\\\\.\\-\\(\\):])+(.json)$") ||
+                model.getUnfilteredHistoryName().trim().isEmpty()) {
+            throw new GlobalConfigurationNotValidException("Setting: 'unfilteredHistoryName' - cannot be null or empty. Must has the *.json extension.");
         }
 
         log.info("Settings are successfully initialized.");
