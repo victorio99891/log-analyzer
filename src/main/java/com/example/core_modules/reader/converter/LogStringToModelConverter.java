@@ -64,7 +64,7 @@ public class LogStringToModelConverter {
         );
     }
 
-    private static List<String> tokenizeLog(String logString) {
+    static List<String> tokenizeLog(String logString) {
         String delimiter = GlobalConfigurationHandler.getInstance().config().getLogDelimiterPattern();
         StringTokenizer tokenizer = new StringTokenizer(logString, delimiter);
 
@@ -75,7 +75,7 @@ public class LogStringToModelConverter {
         return tokenList;
     }
 
-    private static String getSection(List<String> tokenList, LogStructure structure) {
+    static String getSection(List<String> tokenList, LogStructure structure) {
         String section = tokenList.get(structure.section());
         if (section != null && section.trim().isEmpty()) {
             section = section.trim();

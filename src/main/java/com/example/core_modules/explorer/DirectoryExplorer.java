@@ -1,12 +1,12 @@
 package com.example.core_modules.explorer;
 
+import com.example.cli.flow.SystemExiter;
 import com.example.core_modules.exception.UnsupportedFileFormatException;
 import com.example.core_modules.model.file.FileExtension;
 import com.example.core_modules.model.file.FilePath;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -14,7 +14,7 @@ import java.util.Set;
 @Slf4j
 public final class DirectoryExplorer {
 
-    private static final String ERROR_LOG_FILE_PATTERN = "SysMonError";
+    static final String ERROR_LOG_FILE_PATTERN = "SysMonError";
 
     public Set<FilePath> exploreEndDir(File directory) {
         Set<FilePath> paths = new HashSet<>();
@@ -36,8 +36,8 @@ public final class DirectoryExplorer {
                 log.info("Specified path points to an empty directory.");
             }
 
-        } catch (IOException e) {
-            log.error(e.toString());
+        } catch (Exception e) {
+            SystemExiter.getInstance().exitWithError(e);
         }
 
         if (paths.isEmpty()) {
