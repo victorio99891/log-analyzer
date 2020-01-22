@@ -23,8 +23,7 @@ import java.util.Set;
 
 @Slf4j
 public class ReportGenerator {
-    //TODO: [DONE] Add flag isRegexFiltered reprot.
-    private static final String DATE_TIME_PATTERN = "yyyyMMddHHmm";
+    static final String DATE_TIME_PATTERN = "yyyyMMddHHmm";
 
     public void generateReportFromHistoryFile(boolean isRegexFilteredReport) {
         log.info("Report: Loading of history file for report needs...");

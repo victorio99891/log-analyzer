@@ -18,7 +18,7 @@ public class SystemExiter {
     }
 
 
-    //TODO: Add global error handling when application would crash under control
+    //TODO: [MAKE SURE] Add global error handling when application would crash under control
     public void exitWithError(Throwable e) throws UnexpectedExitException {
         throw new UnexpectedExitException(e);
     }

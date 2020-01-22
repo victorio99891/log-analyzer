@@ -30,6 +30,7 @@
         <guava.version>20.0</guava.version>
         <spring-boot-maven-plugin.version>1.5.22.RELEASE</spring-boot-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
+        <commons-lang3.version>3.8</commons-lang3.version>
     </properties>
 
     <dependencies>
@@ -83,6 +84,11 @@
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>${commons-codec.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>

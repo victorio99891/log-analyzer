@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="APP [--path realPath --datefrom --dateto --report]" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.example.App" />
+    <module name="log-analyzer" />
+    <option name="PROGRAM_PARAMETERS" value="--path &quot;C:\projects\IdeaProjects\log-analyzer\cmd&quot; --datefrom 20191017000001 --dateto 20191017235959 --report" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

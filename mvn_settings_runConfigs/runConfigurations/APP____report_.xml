@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="APP [--report]" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.example.App" />
+    <module name="log-analyzer" />
+    <option name="PROGRAM_PARAMETERS" value="--report" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

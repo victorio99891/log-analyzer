@@ -45,7 +45,7 @@ public class HashTool {
                 .getRegexFilterList();
 
         if (isRegexFilterActive) {
-            //TODO: Regex filtration
+            //TODO: [DONE] Regex filtration
             for (String regex : regexFilterList) {
                 edited = edited.replaceAll(regex, "#REGEX#");
             }
