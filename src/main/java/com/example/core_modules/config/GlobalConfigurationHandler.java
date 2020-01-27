@@ -11,8 +11,9 @@ import java.io.IOException;
 @Slf4j
 public class GlobalConfigurationHandler {
 
+    private static final String GLOBAL_SETTINGS_PATH = "config/GlobalConfiguration.json";
     private static GlobalConfigurationHandler instance = null;
-    private static ConfigurationModel config = null;
+    private ConfigurationModel config = null;
 
     private GlobalConfigurationHandler() {
     }
@@ -20,18 +21,28 @@ public class GlobalConfigurationHandler {
     public static GlobalConfigurationHandler getInstance() {
         if (instance == null) {
             log.info("Trying to initialize settings...");
+            GlobalConfigurationHandler handler = new GlobalConfigurationHandler();
             ObjectMapper mapper = new ObjectMapper();
-            File configFile = new File("config/GlobalConfiguration.json");
             try {
-                config = mapper.readValue(configFile, ConfigurationModel.class);
-                validateConfiguration(config);
+                File configFile = handler.loadSettingsFile();
+                handler.config = mapper.readValue(configFile, ConfigurationModel.class);
+                validateConfiguration(handler.config);
             } catch (IOException e) {
-                log.error("Global configuration file cannot be loaded.", e);
+                log.error("\nGlobal configuration file cannot be loaded." +
+                        "\nCorrect file location and name: " + GLOBAL_SETTINGS_PATH +
+                        "\nExample config JSON: \n{\n" +
+                        "  \"logDelimiterPattern\": \"*#-!-#*\",\n" +
+                        "  \"regexFilterList\": [\n" +
+                        "    \"@[\\\\D\\\\d]{8}\"\n" +
+                        "  ],\n" +
+                        "  \"regexFilteredHistoryName\": \"LogHistory_RegexFiltered.json\",\n" +
+                        "  \"unfilteredHistoryName\" : \"LogHistory.json\"\n" +
+                        "}");
                 SystemExiter.getInstance().exitWithError(e);
             } catch (GlobalConfigurationNotValidException e) {
                 SystemExiter.getInstance().exitWithError(e);
             }
-            instance = new GlobalConfigurationHandler();
+            instance = handler;
         }
         return instance;
     }
@@ -59,6 +70,10 @@ public class GlobalConfigurationHandler {
         }
 
         log.info("Settings are successfully initialized.");
+    }
+
+    private File loadSettingsFile() {
+        return new File(GLOBAL_SETTINGS_PATH);
     }
 
     public ConfigurationModel config() {
