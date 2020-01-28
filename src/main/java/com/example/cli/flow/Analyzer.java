@@ -74,12 +74,24 @@ public class Analyzer {
 
     public Map<String, LogModel> analyzeWithoutTimeSpecified(String path, boolean isRegexActive) {
         Map<String, LogModel> logModelMap = loadLogsFromHistoryJSON(isRegexActive);
-        HashTool hashTool = new HashTool(logModelMap);
         Set<FilePath> paths = new DirectoryExplorer().exploreEndDir(new File(path));
-        generateHistoryJSON(logModelMap, hashTool, paths, isRegexActive);
+
+        // READ LOGS
+        List<LogModel> readLogs = readLogsFromPaths(paths);
+
+        //OPTIONAL : FILTER LOGS !
+        //TODO: Filter - BUT NOT HERE!
+
+
+        // CALCULATE HASH
+        calculateHash(logModelMap, readLogs, isRegexActive);
+
+        // FILL-UP THE HISTORY
+        generateHistoryJSON(logModelMap, isRegexActive);
 
         return logModelMap;
     }
+
 
     public Map<String, LogModel> analyzeWithTimeSpecified(String path, String dateFrom, String dateTo, boolean isRegexActive) {
 
@@ -93,17 +105,26 @@ public class Analyzer {
 
             if (isValid) {
                 Map<String, LogModel> logModelMap = loadLogsFromHistoryJSON(isRegexActive);
-
-                HashTool hashTool = new HashTool(logModelMap);
                 Set<FilePath> paths = new DirectoryExplorer().exploreEndDir(new File(path));
 
-                paths = resolveFilesAtCorrectTimeIntervals(paths, dateTimeFrom, dateTimeTo);
+//                paths = resolveFilesAtCorrectTimeIntervals(paths, dateTimeFrom, dateTimeTo);
+
+                // READ LOGS
+                List<LogModel> readLogs = readLogsFromPaths(paths);
+                // HISTORY
+                log.info("Filter logs from history...");
+                List<LogModel> historyList = filterLogsByDateRange(new ArrayList<>(logModelMap.values()), dateTimeFrom, dateTimeTo);
+                logModelMap = mapFromList(historyList);
+
+                // CURRENT
+                log.info("Filter current logs...");
+                readLogs = filterLogsByDateRange(readLogs, dateTimeFrom, dateTimeTo);
+
+
+                calculateHash(logModelMap, readLogs, isRegexActive);
 
                 // FILL-UP THE HISTORY
-                generateHistoryJSON(logModelMap, hashTool, paths, isRegexActive);
-
-                // FILTER BY DATES
-                // logModelMap = filterHistoryLogsByDates(logModelMap, dateTimeFrom, dateTimeTo);
+                generateHistoryJSON(logModelMap, isRegexActive);
 
                 return logModelMap;
             }
@@ -117,26 +138,49 @@ public class Analyzer {
         return null;
     }
 
-    private Map<String, LogModel> filterHistoryLogsByDates(Map<String, LogModel> logModelMap, DateTime dateFrom, DateTime dateTo) {
-        Map<String, LogModel> filteredLogs = new HashMap<>();
+    private Map<String, LogModel> mapFromList(List<LogModel> historyList) {
+        Map<String, LogModel> map = new HashMap<>();
+        for (LogModel logModel : historyList) {
+            if (logModel.getHashId() == null) {
+                throw new NullPointerException("HashId in log from history cannot be null!");
+            }
+            map.put(logModel.getHashId(), logModel);
+        }
+        return map;
+    }
 
-        for (LogModel logModel : logModelMap.values()) {
-            if (dateFrom != null && dateTo == null) {
-                if (logModel.getFirstCallDate().isAfter(dateFrom)) {
-                    filteredLogs.put(logModel.getHashId(), logModel);
-                }
-            } else if (dateFrom == null && dateTo != null) {
-                if (logModel.getFirstCallDate().isBefore(dateTo)) {
-                    filteredLogs.put(logModel.getHashId(), logModel);
-                }
-            } else if (dateFrom != null && dateTo != null) {
-                if (logModel.getFirstCallDate().isAfter(dateFrom) &&
-                        logModel.getLastCallDate().isBefore(dateTo)) {
-                    filteredLogs.put(logModel.getHashId(), logModel);
+    private List<LogModel> filterLogsByDateRange(List<LogModel> logModelMap, DateTime dateFrom, DateTime dateTo) {
+        List<LogModel> filteredLogs = new ArrayList<>();
+
+        if (dateFrom != null || dateTo != null) {
+            int filteredCounter = 0;
+            log.info("Start filtering logs. Current collection size: " + logModelMap.size());
+            for (LogModel logModel : logModelMap) {
+                if (dateFrom != null && dateTo == null) {
+                    if (logModel.getFirstCallDate().isAfter(dateFrom)) {
+                        filteredLogs.add(logModel);
+                    } else {
+                        ++filteredCounter;
+                    }
+                } else if (dateFrom == null && dateTo != null) {
+                    if (logModel.getFirstCallDate().isBefore(dateTo)) {
+                        filteredLogs.add(logModel);
+                    } else {
+                        ++filteredCounter;
+                    }
+                } else if (dateFrom != null && dateTo != null) {
+                    if (logModel.getFirstCallDate().isAfter(dateFrom) &&
+                            logModel.getLastCallDate().isBefore(dateTo)) {
+                        filteredLogs.add(logModel);
+                    } else {
+                        ++filteredCounter;
+                    }
                 }
             }
+            log.info("Filtered out " + filteredCounter + " which occurrences don't match to date range.");
+        } else {
+            log.info("Log filtering is omitted due to 'dateFrom' and 'dateTo' absence. ");
         }
-
         return filteredLogs;
     }
 
@@ -218,7 +262,6 @@ public class Analyzer {
             if (dateTimeTo.isAfter(dateTimeFrom)) {
                 result = true;
             } else {
-                result = false;
                 log.error("Date 'to' is not after date 'from'.");
             }
         }
@@ -235,26 +278,9 @@ public class Analyzer {
         return dateTime;
     }
 
-    void generateHistoryJSON(Map<String, LogModel> logModelMap, HashTool hashTool, Set<FilePath> paths, boolean isRegexActive) {
-        for (FilePath path1 : paths) {
-            List<LogModel> readLogsList = null;
-            if (FileExtension.LOG.equals(path1.getExtension())) {
-                readLogsList = logFileReader.read(path1.getFullPath());
-                log.info("[LOG FILE] Found " + readLogsList.size() + " ERROR or FATAL logs in file: " + path1.getFullPath());
-                for (LogModel model : readLogsList) {
-                    hashTool.generateHash(model, isRegexActive);
-                }
-            } else if (FileExtension.ZIP.equals(path1.getExtension())) {
-                readLogsList = zipFileReader.read(path1.getFullPath());
-                log.info("[ZIP FILE] Found " + readLogsList.size() + " ERROR or FATAL logs in file: " + path1.getFullPath());
-                for (LogModel model : readLogsList) {
-                    hashTool.generateHash(model, isRegexActive);
-                }
-            }
-        }
+    void generateHistoryJSON(Map<String, LogModel> logModelMap, boolean isRegexActive) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
-
         try {
             if (isRegexActive) {
                 String fileName = GlobalConfigurationHandler.getInstance().config().getRegexFilteredHistoryName();
@@ -268,6 +294,29 @@ public class Analyzer {
             log.info("Newer version of history has been successfully saved!");
         } catch (IOException e) {
             log.error(e.toString());
+        }
+    }
+
+    List<LogModel> readLogsFromPaths(Set<FilePath> paths) {
+        List<LogModel> readLogsList = new ArrayList<>();
+        for (FilePath path : paths) {
+            //TODO: Differentiate two responsibilities is necessary -> generating hash is something different that reading log list !!!
+            if (FileExtension.LOG.equals(path.getExtension())) {
+                final List<LogModel> modelList = logFileReader.read(path.getFullPath());
+                readLogsList.addAll(modelList);
+                log.info("[LOG FILE] Found " + modelList.size() + " ERROR or FATAL logs in file: " + path.getFullPath());
+            } else if (FileExtension.ZIP.equals(path.getExtension())) {
+                final List<LogModel> modelList = zipFileReader.read(path.getFullPath());
+                readLogsList.addAll(modelList);
+                log.info("[ZIP FILE] Found " + modelList.size() + " ERROR or FATAL logs in file: " + path.getFullPath());
+            }
+        }
+        return readLogsList;
+    }
+
+    void calculateHash(Map<String, LogModel> logModelMap, List<LogModel> readLogs, boolean isRegexActive) {
+        for (LogModel model : readLogs) {
+            HashTool.generateHash(logModelMap, model, isRegexActive);
         }
     }
 }

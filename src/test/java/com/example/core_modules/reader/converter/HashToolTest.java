@@ -7,37 +7,39 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class HashToolTest {
 
-    private HashTool hashTool;
+    private Map<String, LogModel> collection;
     private LogModel logModelNow;
     private LogModel logModelLater;
 
     @Before
     public void setUp() {
-        this.hashTool = new HashTool(null);
+        collection = new HashMap<>();
         this.logModelNow = new LogModel(null, LogType.ERROR, DateTime.now(), DateTime.now(), "fakeServer", "fakeDetails", "fakeMessage");
         this.logModelLater = new LogModel(null, LogType.ERROR, DateTime.now().plusDays(5), DateTime.now().plusDays(5), "fakeServer", "fakeDetails", "fakeMessage");
     }
 
     @Test
     public void generateHash_oneLogModel() {
-        this.hashTool.generateHash(this.logModelNow, false);
+        HashTool.generateHash(collection, this.logModelNow, false);
 
-        Assert.assertEquals(1, this.hashTool.hashedCollection.size());
+        Assert.assertEquals(1, this.collection.size());
     }
 
     @Test
     public void generateHash_twoRepeatedLogModels() {
 
-        this.hashTool.generateHash(this.logModelNow, false);
+        HashTool.generateHash(this.collection, this.logModelNow, false);
 
-        this.hashTool.generateHash(this.logModelLater, false);
+        HashTool.generateHash(this.collection, this.logModelLater, false);
 
-        Assert.assertEquals(1, this.hashTool.hashedCollection.size());
-        Assert.assertEquals(2, this.hashTool.hashedCollection.get(this.logModelLater.getHashId()).getOccurrences());
+        Assert.assertEquals(1, this.collection.size());
+        Assert.assertEquals(2, this.collection.get(this.logModelLater.getHashId()).getOccurrences());
     }
-
 
 
 }

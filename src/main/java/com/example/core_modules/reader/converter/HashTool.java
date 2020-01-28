@@ -5,24 +5,17 @@ import com.example.core_modules.model.log.LogModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Slf4j
 public class HashTool {
 
-    Map<String, LogModel> hashedCollection;
+    private HashTool() {
 
-    public HashTool(Map<String, LogModel> hashedCollection) {
-        if (hashedCollection != null) {
-            this.hashedCollection = hashedCollection;
-        } else {
-            this.hashedCollection = new HashMap<>();
-        }
     }
 
-    public void generateHash(LogModel currentLogModel, boolean isRegexFilterActive) {
+    public static void generateHash(Map<String, LogModel> hashedCollection, LogModel currentLogModel, boolean isRegexFilterActive) {
         String hash = hash(currentLogModel.getMessage(), isRegexFilterActive);
 
         currentLogModel.setHashId(hash);
@@ -38,7 +31,7 @@ public class HashTool {
         }
     }
 
-    String hash(String text, boolean isRegexFilterActive) {
+    static String hash(String text, boolean isRegexFilterActive) {
         String edited = text;
         List<String> regexFilterList = GlobalConfigurationHandler.getInstance()
                 .config()
