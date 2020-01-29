@@ -16,7 +16,8 @@ public class App {
             //TODO: Uncomment to print whole stacktrace when application fails
             // log.error("\n{}", ExceptionUtils.getStackTrace(e.getCause()));
         } catch (Exception e) {
-            log.error("\n{}", ExceptionUtils.getStackTrace(e.getCause()));
+            e.printStackTrace();
+//            log.error("\n{}", ExceptionUtils.getStackTrace(e.getCause()));
         }
     }
 }
