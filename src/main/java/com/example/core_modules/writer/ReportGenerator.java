@@ -1,8 +1,8 @@
 package com.example.core_modules.writer;
 
-import com.example.cli.flow.Analyzer;
 import com.example.cli.flow.SystemExiter;
 import com.example.core_modules.model.log.LogModel;
+import com.example.core_modules.reader.loader.HistoryLoader;
 import com.example.core_modules.writer.exception.ReportGenerationException;
 import com.example.core_modules.writer.model.ReportColumn;
 import lombok.extern.slf4j.Slf4j;
@@ -205,11 +205,7 @@ public class ReportGenerator {
     }
 
     private Set<LogModel> loadLogsFromHistoryFile(boolean isRegexFilteredReport) {
-        if (isRegexFilteredReport) {
-            return new HashSet<>(Analyzer.loadJsonRegexHistoryFile().values());
-        } else {
-            return new HashSet<>(Analyzer.loadJsonHistoryFile().values());
-        }
+        return new HashSet<>(new HistoryLoader().loadFromJSON(isRegexFilteredReport).values());
     }
 
 

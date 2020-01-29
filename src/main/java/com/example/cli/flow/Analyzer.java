@@ -1,6 +1,5 @@
 package com.example.cli.flow;
 
-import com.example.core_modules.config.GlobalConfigurationHandler;
 import com.example.core_modules.explorer.DirectoryExplorer;
 import com.example.core_modules.model.file.FileExtension;
 import com.example.core_modules.model.file.FilePath;
@@ -8,14 +7,11 @@ import com.example.core_modules.model.log.LogModel;
 import com.example.core_modules.reader.LogFileReader;
 import com.example.core_modules.reader.ZipFileReader;
 import com.example.core_modules.reader.converter.HashTool;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.example.core_modules.reader.loader.HistoryLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -28,70 +24,24 @@ public class Analyzer {
 
     private ZipFileReader zipFileReader = new ZipFileReader();
 
-    public static Map<String, LogModel> loadJsonHistoryFile() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JodaModule());
-        try {
-
-            log.info("Trying to load JSON history file...");
-
-            Map<String, LogModel> mapForJson = mapper.readValue(
-                    new File(GlobalConfigurationHandler.getInstance().config().getUnfilteredHistoryName()),
-                    new TypeReference<HashMap<String, LogModel>>() {
-                    });
-
-            log.info("History JSON successfully loaded. (Number of records: " + mapForJson.size() + ")");
-
-            return mapForJson;
-
-        } catch (IOException e) {
-            log.info("History JSON not available.");
-        }
-        return new HashMap<>();
-    }
-
-    public static Map<String, LogModel> loadJsonRegexHistoryFile() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JodaModule());
-        try {
-
-            log.info("Trying to load JSON history (regex filtered) file...");
-
-            Map<String, LogModel> mapForJson = mapper.readValue(
-                    new File(GlobalConfigurationHandler.getInstance().config().getRegexFilteredHistoryName()),
-                    new TypeReference<HashMap<String, LogModel>>() {
-                    });
-
-            log.info("History JSON successfully loaded. (Number of records: " + mapForJson.size() + ")");
-
-            return mapForJson;
-
-        } catch (IOException e) {
-            log.info("History JSON not available.");
-        }
-        return new HashMap<>();
-    }
+    private HistoryLoader historyLoader = new HistoryLoader();
 
     public Map<String, LogModel> analyzeWithoutTimeSpecified(String path, boolean isRegexActive) {
-        Map<String, LogModel> logModelMap = loadLogsFromHistoryJSON(isRegexActive);
+        Map<String, LogModel> logModelMap = historyLoader.loadFromJSON(isRegexActive);
         Set<FilePath> paths = new DirectoryExplorer().exploreEndDir(new File(path));
 
         // READ LOGS
         List<LogModel> readLogs = readLogsFromPaths(paths);
-
-        //OPTIONAL : FILTER LOGS !
-        //TODO: Filter - BUT NOT HERE!
 
 
         // CALCULATE HASH
         calculateHash(logModelMap, readLogs, isRegexActive);
 
         // FILL-UP THE HISTORY
-        generateHistoryJSON(logModelMap, isRegexActive);
+        historyLoader.generateHistoryJSON(logModelMap, isRegexActive);
 
         return logModelMap;
     }
-
 
     public Map<String, LogModel> analyzeWithTimeSpecified(String path, String dateFrom, String dateTo, boolean isRegexActive) {
 
@@ -104,10 +54,10 @@ public class Analyzer {
             log.debug("Passed date/dates is/are valid: " + isValid);
 
             if (isValid) {
-                Map<String, LogModel> logModelMap = loadLogsFromHistoryJSON(isRegexActive);
+                Map<String, LogModel> logModelMap = historyLoader.loadFromJSON(isRegexActive);
                 Set<FilePath> paths = new DirectoryExplorer().exploreEndDir(new File(path));
 
-//                paths = resolveFilesAtCorrectTimeIntervals(paths, dateTimeFrom, dateTimeTo);
+                /*paths = resolveFilesAtCorrectTimeIntervals(paths, dateTimeFrom, dateTimeTo);*/
 
                 // READ LOGS
                 List<LogModel> readLogs = readLogsFromPaths(paths);
@@ -124,7 +74,7 @@ public class Analyzer {
                 calculateHash(logModelMap, readLogs, isRegexActive);
 
                 // FILL-UP THE HISTORY
-                generateHistoryJSON(logModelMap, isRegexActive);
+                historyLoader.generateHistoryJSON(logModelMap, isRegexActive);
 
                 return logModelMap;
             }
@@ -184,7 +134,7 @@ public class Analyzer {
         return filteredLogs;
     }
 
-    Set<FilePath> resolveFilesAtCorrectTimeIntervals(Set<FilePath> paths, DateTime dateFrom, DateTime dateTo) throws ParseException {
+    /*Set<FilePath> resolveFilesAtCorrectTimeIntervals(Set<FilePath> paths, DateTime dateFrom, DateTime dateTo) throws ParseException {
         Set<FilePath> filteredSet = new HashSet<>();
         for (FilePath path : paths) {
             if (FileExtension.ZIP.equals(path.getExtension())) {
@@ -228,17 +178,7 @@ public class Analyzer {
         }
 
         return filteredSet;
-    }
-
-    Map<String, LogModel> loadLogsFromHistoryJSON(boolean isRegexIsActive) {
-        Map<String, LogModel> logModelMap;
-        if (isRegexIsActive) {
-            logModelMap = loadJsonRegexHistoryFile();
-        } else {
-            logModelMap = loadJsonHistoryFile();
-        }
-        return logModelMap;
-    }
+    }*/
 
     boolean validateDateAndTime(DateTime dateTimeFrom, DateTime dateTimeTo) {
 
@@ -278,25 +218,6 @@ public class Analyzer {
         return dateTime;
     }
 
-    void generateHistoryJSON(Map<String, LogModel> logModelMap, boolean isRegexActive) {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JodaModule());
-        try {
-            if (isRegexActive) {
-                String fileName = GlobalConfigurationHandler.getInstance().config().getRegexFilteredHistoryName();
-                log.info("Rewriting the {} file...", fileName);
-                mapper.writeValue(new File(fileName), logModelMap);
-            } else {
-                String fileName = GlobalConfigurationHandler.getInstance().config().getUnfilteredHistoryName();
-                log.info("Rewriting the {} file...", fileName);
-                mapper.writeValue(new File(fileName), logModelMap);
-            }
-            log.info("Newer version of history has been successfully saved!");
-        } catch (IOException e) {
-            log.error(e.toString());
-        }
-    }
-
     List<LogModel> readLogsFromPaths(Set<FilePath> paths) {
         List<LogModel> readLogsList = new ArrayList<>();
         for (FilePath path : paths) {
@@ -311,6 +232,13 @@ public class Analyzer {
                 log.info("[ZIP FILE] Found " + modelList.size() + " ERROR or FATAL logs in file: " + path.getFullPath());
             }
         }
+        // SORT BY DATE
+        Collections.sort(readLogsList, new Comparator<LogModel>() {
+            @Override
+            public int compare(LogModel log1, LogModel log2) {
+                return log1.getFirstCallDate().compareTo(log2.getFirstCallDate());
+            }
+        });
         return readLogsList;
     }
 

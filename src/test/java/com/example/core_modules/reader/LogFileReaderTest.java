@@ -20,7 +20,7 @@ public class LogFileReaderTest {
             "[END]\n" +
             "[LOG|ERROR|2009 January 23, 07:46:26 (965)|Server|/var/Server_4.log]\n" +
             "The incoming message is referring to non-existing outgoing message. No such linked id  in a database!\n" +
-            "[END]]";
+            "[END]";
 
     @Before
     public void setUp() {
