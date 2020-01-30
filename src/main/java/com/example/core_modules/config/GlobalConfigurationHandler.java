@@ -28,15 +28,12 @@ public class GlobalConfigurationHandler {
                 handler.config = mapper.readValue(configFile, ConfigurationModel.class);
                 handler.validateConfiguration(handler.config);
             } catch (IOException e) {
-                log.error("\nGlobal configuration file cannot be loaded." +
-                        "\nCorrect file location is under 'resources' directory and name: " + GLOBAL_SETTINGS_PATH +
-                        "\nExample config JSON: \n{\n" +
+                log.error("{\n" +
                         "  \"logDelimiterPattern\": \"*#-!-#*\",\n" +
                         "  \"regexFilterList\": [\n" +
                         "    \"@[\\\\D\\\\d]{8}\"\n" +
                         "  ],\n" +
-                        "  \"regexFilteredHistoryName\": \"LogHistory_RegexFiltered.json\",\n" +
-                        "  \"unfilteredHistoryName\" : \"LogHistory.json\"\n" +
+                        "  \"historyFileName\" : \"LogHistory.json\"\n" +
                         "}", e);
                 SystemExiter.getInstance().exitWithError(e);
             } catch (GlobalConfigurationNotValidException e) {
@@ -57,15 +54,9 @@ public class GlobalConfigurationHandler {
             throw new GlobalConfigurationNotValidException("Setting: 'logFileDelimiterPattern' - cannot be null or empty.");
         }
 
-        if (model.getRegexFilteredHistoryName() == null ||
-                !model.getRegexFilteredHistoryName().matches("([a-zA-Z0-9\\s_\\\\.\\-\\(\\):])+(.json)$") ||
-                model.getRegexFilteredHistoryName().trim().isEmpty()) {
-            throw new GlobalConfigurationNotValidException("Setting: 'regexFilteredHistoryName' - cannot be null or empty. Must has the *.json extension.");
-        }
-
-        if (model.getUnfilteredHistoryName() == null ||
-                !model.getUnfilteredHistoryName().matches("([a-zA-Z0-9\\s_\\\\.\\-\\(\\):])+(.json)$") ||
-                model.getUnfilteredHistoryName().trim().isEmpty()) {
+        if (model.getHistoryFileName() == null ||
+                !model.getHistoryFileName().matches("([a-zA-Z0-9\\s_\\\\.\\-\\(\\):])+(.json)$") ||
+                model.getHistoryFileName().trim().isEmpty()) {
             throw new GlobalConfigurationNotValidException("Setting: 'unfilteredHistoryName' - cannot be null or empty. Must has the *.json extension.");
         }
 

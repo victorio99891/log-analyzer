@@ -79,10 +79,10 @@ public class AnalyzerTest {
     @Test
     public void analyzeWithoutTimeSpecified_shouldPass() {
         Map<String, LogModel> hashMap = new HashMap<>();
-        Mockito.doNothing().when(historyLoader).generateHistoryJSON(hashMap, false);
-        Mockito.when(historyLoader.loadFromJSON(false)).thenReturn(hashMap);
+        Mockito.doNothing().when(historyLoader).generateHistoryJSON(hashMap);
+        Mockito.when(historyLoader.loadFromJSON()).thenReturn(hashMap);
 
-        Map<String, LogModel> map = analyzer.analyzeWithoutTimeSpecified(fakeLogDirectory.getRoot().getAbsolutePath(), false);
+        Map<String, LogModel> map = analyzer.analyzeWithoutTimeSpecified(fakeLogDirectory.getRoot().getAbsolutePath());
 
         Assert.assertEquals(1, map.size());
 
@@ -93,10 +93,10 @@ public class AnalyzerTest {
     @Test
     public void analyzeWithTimeSpecified_providedTwoDates_shouldPass() {
         Map<String, LogModel> hashMap = new HashMap<>();
-        Mockito.doNothing().when(historyLoader).generateHistoryJSON(hashMap, false);
-        Mockito.when(historyLoader.loadFromJSON(false)).thenReturn(hashMap);
+        Mockito.doNothing().when(historyLoader).generateHistoryJSON(hashMap);
+        Mockito.when(historyLoader.loadFromJSON()).thenReturn(hashMap);
 
-        Map<String, LogModel> map = analyzer.analyzeWithTimeSpecified(fakeLogDirectory.getRoot().getAbsolutePath(), "20090122000001", "20090125000001", false);
+        Map<String, LogModel> map = analyzer.analyzeWithTimeSpecified(fakeLogDirectory.getRoot().getAbsolutePath(), "20090122000001", "20090125000001");
 
         Assert.assertEquals(1, map.size());
 
@@ -107,10 +107,10 @@ public class AnalyzerTest {
     @Test
     public void analyzeWithTimeSpecified_dateFromNull_shouldPass() {
         Map<String, LogModel> hashMap = new HashMap<>();
-        Mockito.doNothing().when(historyLoader).generateHistoryJSON(hashMap, false);
-        Mockito.when(historyLoader.loadFromJSON(false)).thenReturn(hashMap);
+        Mockito.doNothing().when(historyLoader).generateHistoryJSON(hashMap);
+        Mockito.when(historyLoader.loadFromJSON()).thenReturn(hashMap);
 
-        Map<String, LogModel> map = analyzer.analyzeWithTimeSpecified(fakeLogDirectory.getRoot().getAbsolutePath(), null, "20090125000001", false);
+        Map<String, LogModel> map = analyzer.analyzeWithTimeSpecified(fakeLogDirectory.getRoot().getAbsolutePath(), null, "20090125000001");
 
         Assert.assertEquals(1, map.size());
 
@@ -121,10 +121,10 @@ public class AnalyzerTest {
     @Test
     public void analyzeWithTimeSpecified_dateToNull_shouldPass() {
         Map<String, LogModel> hashMap = new HashMap<>();
-        Mockito.doNothing().when(historyLoader).generateHistoryJSON(hashMap, false);
-        Mockito.when(historyLoader.loadFromJSON(false)).thenReturn(hashMap);
+        Mockito.doNothing().when(historyLoader).generateHistoryJSON(hashMap);
+        Mockito.when(historyLoader.loadFromJSON()).thenReturn(hashMap);
 
-        Map<String, LogModel> map = analyzer.analyzeWithTimeSpecified(fakeLogDirectory.getRoot().getAbsolutePath(), "20090122000001", null, false);
+        Map<String, LogModel> map = analyzer.analyzeWithTimeSpecified(fakeLogDirectory.getRoot().getAbsolutePath(), "20090122000001", null);
 
         Assert.assertEquals(1, map.size());
 

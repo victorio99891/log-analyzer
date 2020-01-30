@@ -25,7 +25,7 @@ public class HashToolTest {
 
     @Test
     public void generateHash_oneLogModel() {
-        HashTool.generateHash(collection, this.logModelNow, false);
+        HashTool.generateHash(collection, this.logModelNow);
 
         Assert.assertEquals(1, this.collection.size());
     }
@@ -33,9 +33,9 @@ public class HashToolTest {
     @Test
     public void generateHash_twoRepeatedLogModels() {
 
-        HashTool.generateHash(this.collection, this.logModelNow, false);
+        HashTool.generateHash(this.collection, this.logModelNow);
 
-        HashTool.generateHash(this.collection, this.logModelLater, false);
+        HashTool.generateHash(this.collection, this.logModelLater);
 
         Assert.assertEquals(1, this.collection.size());
         Assert.assertEquals(2, this.collection.get(this.logModelLater.getHashId()).getOccurrences());

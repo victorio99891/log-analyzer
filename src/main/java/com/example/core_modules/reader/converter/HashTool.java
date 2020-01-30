@@ -15,8 +15,8 @@ public class HashTool {
 
     }
 
-    public static void generateHash(Map<String, LogModel> hashedCollection, LogModel currentLogModel, boolean isRegexFilterActive) {
-        String hash = hash(currentLogModel.getMessage(), isRegexFilterActive);
+    public static void generateHash(Map<String, LogModel> hashedCollection, LogModel currentLogModel) {
+        String hash = hash(currentLogModel.getMessage());
 
         currentLogModel.setHashId(hash);
 
@@ -32,17 +32,14 @@ public class HashTool {
         }
     }
 
-    static String hash(String text, boolean isRegexFilterActive) {
+    static String hash(String text) {
         String edited = text;
         List<String> regexFilterList = GlobalConfigurationHandler.getInstance()
                 .config()
                 .getRegexFilterList();
 
-        if (isRegexFilterActive) {
-            //TODO: [DONE] Regex filtration
-            for (String regex : regexFilterList) {
-                edited = edited.replaceAll(regex, "#REGEX#");
-            }
+        for (String regex : regexFilterList) {
+            edited = edited.replaceAll(regex, "#REGEX#");
         }
 
         edited = edited.replaceAll("\\d", "X");

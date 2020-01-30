@@ -32,7 +32,7 @@ public class ReportGeneratorTest {
 
     @Test
     public void reportShouldBeGenerated() {
-        reportGenerator.generateReport(logModelSet, false);
+        reportGenerator.generateReport(logModelSet);
     }
 
     @After

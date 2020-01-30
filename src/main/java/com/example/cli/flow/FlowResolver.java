@@ -22,12 +22,10 @@ public class FlowResolver {
                 !commandsToExecute.containsKey(CliCommand.DATE_FROM) &&
                 !commandsToExecute.containsKey(CliCommand.DATE_TO)) {
             logModelMap = analyzer.analyzeWithoutTimeSpecified(
-                    commandsToExecute.get(CliCommand.DIRECTORY_PATH),
-                    commandsToExecute.containsKey(CliCommand.REGEX_FILTER)
+                    commandsToExecute.get(CliCommand.DIRECTORY_PATH)
             );
             if (commandsToExecute.containsKey(CliCommand.REPORT)) {
-                reportGenerator.generateReport(new HashSet<>(logModelMap.values()),
-                        commandsToExecute.containsKey(CliCommand.REGEX_FILTER));
+                reportGenerator.generateReport(new HashSet<>(logModelMap.values()));
             }
         }
 
@@ -37,12 +35,10 @@ public class FlowResolver {
             logModelMap = analyzer.analyzeWithTimeSpecified(
                     commandsToExecute.get(CliCommand.DIRECTORY_PATH),
                     commandsToExecute.get(CliCommand.DATE_FROM),
-                    null,
-                    commandsToExecute.containsKey(CliCommand.REGEX_FILTER)
+                    null
             );
             if (commandsToExecute.containsKey(CliCommand.REPORT)) {
-                reportGenerator.generateReport(new HashSet<>(logModelMap.values()),
-                        commandsToExecute.containsKey(CliCommand.REGEX_FILTER));
+                reportGenerator.generateReport(new HashSet<>(logModelMap.values()));
             }
         }
 
@@ -52,12 +48,10 @@ public class FlowResolver {
             logModelMap = analyzer.analyzeWithTimeSpecified(
                     commandsToExecute.get(CliCommand.DIRECTORY_PATH),
                     null,
-                    commandsToExecute.get(CliCommand.DATE_TO),
-                    commandsToExecute.containsKey(CliCommand.REGEX_FILTER)
+                    commandsToExecute.get(CliCommand.DATE_TO)
             );
             if (commandsToExecute.containsKey(CliCommand.REPORT)) {
-                reportGenerator.generateReport(new HashSet<>(logModelMap.values()),
-                        commandsToExecute.containsKey(CliCommand.REGEX_FILTER));
+                reportGenerator.generateReport(new HashSet<>(logModelMap.values()));
             }
         }
 
@@ -67,17 +61,15 @@ public class FlowResolver {
             logModelMap = analyzer.analyzeWithTimeSpecified(
                     commandsToExecute.get(CliCommand.DIRECTORY_PATH),
                     commandsToExecute.get(CliCommand.DATE_FROM),
-                    commandsToExecute.get(CliCommand.DATE_TO),
-                    commandsToExecute.containsKey(CliCommand.REGEX_FILTER)
+                    commandsToExecute.get(CliCommand.DATE_TO)
             );
             if (commandsToExecute.containsKey(CliCommand.REPORT)) {
-                reportGenerator.generateReport(new HashSet<>(logModelMap.values()),
-                        commandsToExecute.containsKey(CliCommand.REGEX_FILTER));
+                reportGenerator.generateReport(new HashSet<>(logModelMap.values()));
             }
         }
 
         if (commandsToExecute.containsKey(CliCommand.REPORT) && !commandsToExecute.containsKey(CliCommand.DIRECTORY_PATH)) {
-            reportGenerator.generateReportFromHistoryFile(commandsToExecute.containsKey(CliCommand.REGEX_FILTER));
+            reportGenerator.generateReportFromHistoryFile();
         }
     }
 

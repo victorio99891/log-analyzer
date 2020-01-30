@@ -36,51 +36,17 @@ public class HistoryLoader {
         return new HashMap<>();
     }
 
-    public Map<String, LogModel> loadJsonRegexHistoryFile(String fileName) {
+    public Map<String, LogModel> loadFromJSON() {
+        return loadJsonHistoryFile(GlobalConfigurationHandler.getInstance().config().getHistoryFileName());
+    }
+
+    public void generateHistoryJSON(Map<String, LogModel> logModelMap) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
         try {
-
-            log.info("Trying to load JSON history (regex filtered) file...");
-
-            Map<String, LogModel> mapForJson = mapper.readValue(
-                    new File(fileName),
-                    new TypeReference<HashMap<String, LogModel>>() {
-                    });
-
-            log.info("History JSON successfully loaded. (Number of records: " + mapForJson.size() + ")");
-
-            return mapForJson;
-
-        } catch (IOException e) {
-            log.info("History JSON not available.");
-        }
-        return new HashMap<>();
-    }
-
-    public Map<String, LogModel> loadFromJSON(boolean isRegexActive) {
-        Map<String, LogModel> logModelMap;
-        if (isRegexActive) {
-            logModelMap = loadJsonRegexHistoryFile(GlobalConfigurationHandler.getInstance().config().getRegexFilteredHistoryName());
-        } else {
-            logModelMap = loadJsonHistoryFile(GlobalConfigurationHandler.getInstance().config().getUnfilteredHistoryName());
-        }
-        return logModelMap;
-    }
-
-    public void generateHistoryJSON(Map<String, LogModel> logModelMap, boolean isRegexActive) {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JodaModule());
-        try {
-            if (isRegexActive) {
-                String fileName = GlobalConfigurationHandler.getInstance().config().getRegexFilteredHistoryName();
-                log.info("Rewriting the {} file...", fileName);
-                mapper.writeValue(new File(fileName), logModelMap);
-            } else {
-                String fileName = GlobalConfigurationHandler.getInstance().config().getUnfilteredHistoryName();
-                log.info("Rewriting the {} file...", fileName);
-                mapper.writeValue(new File(fileName), logModelMap);
-            }
+            String fileName = GlobalConfigurationHandler.getInstance().config().getHistoryFileName();
+            log.info("Rewriting the {} file...", fileName);
+            mapper.writeValue(new File(fileName), logModelMap);
             log.info("Newer version of history has been successfully saved!");
         } catch (IOException e) {
             log.error(e.toString());
