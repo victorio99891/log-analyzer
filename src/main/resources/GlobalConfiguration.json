@@ -1,8 +1,6 @@
 {
   "logDelimiterPattern": "*#-!-#*",
   "regexFilterList": [
-    "@[\\D\\d]{8}"
   ],
-  "regexFilteredHistoryName": "LogHistory_RegexFiltered.json",
-  "unfilteredHistoryName" : "LogHistory.json"
+  "historyFileName" : "LogHistory.json"
 }

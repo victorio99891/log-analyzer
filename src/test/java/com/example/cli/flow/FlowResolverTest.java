@@ -41,14 +41,13 @@ public class FlowResolverTest {
         Set<LogModel> emptySet = new HashSet<>();
         this.commandsToExecute.put(CliCommand.DIRECTORY_PATH, "/var/test");
         this.commandsToExecute.put(CliCommand.REPORT, null);
-        when(analyzer.analyzeWithoutTimeSpecified(anyString(), anyBoolean())).thenReturn(new HashMap<String, LogModel>());
-        doNothing().when(generator).generateReport(emptySet, false);
+        when(analyzer.analyzeWithoutTimeSpecified(anyString())).thenReturn(new HashMap<String, LogModel>());
+        doNothing().when(generator).generateReport(emptySet);
 
         flowResolver.resolve(this.commandsToExecute);
         Mockito.verify(analyzer, Mockito.times(1))
                 .analyzeWithoutTimeSpecified(
-                        this.commandsToExecute.get(CliCommand.DIRECTORY_PATH),
-                        false);
+                        this.commandsToExecute.get(CliCommand.DIRECTORY_PATH));
     }
 
     @Test
@@ -57,16 +56,15 @@ public class FlowResolverTest {
         this.commandsToExecute.put(CliCommand.DIRECTORY_PATH, "/var/test");
         this.commandsToExecute.put(CliCommand.DATE_TO, "20200101120000");
         this.commandsToExecute.put(CliCommand.REPORT, null);
-        when(analyzer.analyzeWithTimeSpecified(anyString(), anyString(), anyString(), anyBoolean())).thenReturn(new HashMap<String, LogModel>());
-        doNothing().when(generator).generateReport(emptySet, false);
+        when(analyzer.analyzeWithTimeSpecified(anyString(), anyString(), anyString())).thenReturn(new HashMap<String, LogModel>());
+        doNothing().when(generator).generateReport(emptySet);
 
         flowResolver.resolve(this.commandsToExecute);
         Mockito.verify(analyzer, Mockito.times(1))
                 .analyzeWithTimeSpecified(
                         this.commandsToExecute.get(CliCommand.DIRECTORY_PATH),
                         null,
-                        this.commandsToExecute.get(CliCommand.DATE_TO),
-                        false);
+                        this.commandsToExecute.get(CliCommand.DATE_TO));
     }
 
     @Test
@@ -75,8 +73,8 @@ public class FlowResolverTest {
         this.commandsToExecute.put(CliCommand.DIRECTORY_PATH, "/var/test");
         this.commandsToExecute.put(CliCommand.DATE_FROM, "20200101120000");
         this.commandsToExecute.put(CliCommand.REPORT, null);
-        when(analyzer.analyzeWithoutTimeSpecified(anyString(), anyBoolean())).thenReturn(new HashMap<String, LogModel>());
-        doNothing().when(generator).generateReport(emptySet, false);
+        when(analyzer.analyzeWithoutTimeSpecified(anyString())).thenReturn(new HashMap<String, LogModel>());
+        doNothing().when(generator).generateReport(emptySet);
 
         flowResolver.resolve(this.commandsToExecute);
 
@@ -84,8 +82,7 @@ public class FlowResolverTest {
                 .analyzeWithTimeSpecified(
                         this.commandsToExecute.get(CliCommand.DIRECTORY_PATH),
                         this.commandsToExecute.get(CliCommand.DATE_FROM),
-                        null,
-                        false);
+                        null);
     }
 
     @Test
@@ -95,8 +92,8 @@ public class FlowResolverTest {
         this.commandsToExecute.put(CliCommand.DATE_FROM, "20200101120000");
         this.commandsToExecute.put(CliCommand.DATE_TO, "20200101160000");
         this.commandsToExecute.put(CliCommand.REPORT, null);
-        when(analyzer.analyzeWithoutTimeSpecified(anyString(), anyBoolean())).thenReturn(new HashMap<String, LogModel>());
-        doNothing().when(generator).generateReport(emptySet, false);
+        when(analyzer.analyzeWithoutTimeSpecified(anyString())).thenReturn(new HashMap<String, LogModel>());
+        doNothing().when(generator).generateReport(emptySet);
 
         flowResolver.resolve(this.commandsToExecute);
 
@@ -104,18 +101,17 @@ public class FlowResolverTest {
                 .analyzeWithTimeSpecified(
                         this.commandsToExecute.get(CliCommand.DIRECTORY_PATH),
                         this.commandsToExecute.get(CliCommand.DATE_FROM),
-                        this.commandsToExecute.get(CliCommand.DATE_TO),
-                        false);
+                        this.commandsToExecute.get(CliCommand.DATE_TO));
     }
 
     @Test
     public void resolve_report_shouldRun() {
         Set<LogModel> emptySet = new HashSet<>();
         this.commandsToExecute.put(CliCommand.REPORT, null);
-        doNothing().when(generator).generateReport(emptySet, false);
+        doNothing().when(generator).generateReport(emptySet);
 
         flowResolver.resolve(this.commandsToExecute);
         Mockito.verify(generator, Mockito.times(1))
-                .generateReportFromHistoryFile(false);
+                .generateReportFromHistoryFile();
     }
 }

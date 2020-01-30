@@ -25,13 +25,13 @@ import java.util.Set;
 public class ReportGenerator {
     static final String DATE_TIME_PATTERN = "yyyyMMddHHmm";
 
-    public void generateReportFromHistoryFile(boolean isRegexFilteredReport) {
+    public void generateReportFromHistoryFile() {
         log.info("Report: Loading of history file for report needs...");
-        final Set<LogModel> logModelSet = loadLogsFromHistoryFile(isRegexFilteredReport);
-        generateReport(logModelSet, isRegexFilteredReport);
+        final Set<LogModel> logModelSet = loadLogsFromHistoryFile();
+        generateReport(logModelSet);
     }
 
-    public void generateReport(Set<LogModel> logModelSet, boolean isRegexFilteredReport) {
+    public void generateReport(Set<LogModel> logModelSet) {
 
         if (logModelSet.isEmpty()) {
             SystemExiter.getInstance().exitWithError(new ReportGenerationException("Report cannot be created because of empty log set. Check data validity."));
@@ -96,11 +96,7 @@ public class ReportGenerator {
         try {
             log.info("Report [9/10]: Trying to save created file...");
             DateTimeFormatter formatter = DateTimeFormat.forPattern(DATE_TIME_PATTERN);
-            if (isRegexFilteredReport) {
-                fileOut = new FileOutputStream("LogReport_RegexFiltered_" + formatter.print(DateTime.now()) + ".xlsx");
-            } else {
-                fileOut = new FileOutputStream("LogReport_" + formatter.print(DateTime.now()) + ".xlsx");
-            }
+            fileOut = new FileOutputStream("LogReport_" + formatter.print(DateTime.now()) + ".xlsx");
             workbook.write(fileOut);
             fileOut.close();
             workbook.close();
@@ -204,8 +200,8 @@ public class ReportGenerator {
         return dateCellStyle;
     }
 
-    private Set<LogModel> loadLogsFromHistoryFile(boolean isRegexFilteredReport) {
-        return new HashSet<>(new HistoryLoader().loadFromJSON(isRegexFilteredReport).values());
+    private Set<LogModel> loadLogsFromHistoryFile() {
+        return new HashSet<>(new HistoryLoader().loadFromJSON().values());
     }
 
 

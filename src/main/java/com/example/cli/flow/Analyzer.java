@@ -26,8 +26,8 @@ public class Analyzer {
 
     private HistoryLoader historyLoader = new HistoryLoader();
 
-    public Map<String, LogModel> analyzeWithoutTimeSpecified(String path, boolean isRegexActive) {
-        Map<String, LogModel> logModelMap = historyLoader.loadFromJSON(isRegexActive);
+    public Map<String, LogModel> analyzeWithoutTimeSpecified(String path) {
+        Map<String, LogModel> logModelMap = historyLoader.loadFromJSON();
         Set<FilePath> paths = new DirectoryExplorer().exploreEndDir(new File(path));
 
         // READ LOGS
@@ -35,15 +35,15 @@ public class Analyzer {
 
 
         // CALCULATE HASH
-        calculateHash(logModelMap, readLogs, isRegexActive);
+        calculateHash(logModelMap, readLogs);
 
         // FILL-UP THE HISTORY
-        historyLoader.generateHistoryJSON(logModelMap, isRegexActive);
+        historyLoader.generateHistoryJSON(logModelMap);
 
         return logModelMap;
     }
 
-    public Map<String, LogModel> analyzeWithTimeSpecified(String path, String dateFrom, String dateTo, boolean isRegexActive) {
+    public Map<String, LogModel> analyzeWithTimeSpecified(String path, String dateFrom, String dateTo) {
 
         try {
             DateTime dateTimeFrom = resolveDateFromString(dateFrom);
@@ -54,7 +54,7 @@ public class Analyzer {
             log.debug("Passed date/dates is/are valid: " + isValid);
 
             if (isValid) {
-                Map<String, LogModel> logModelMap = historyLoader.loadFromJSON(isRegexActive);
+                Map<String, LogModel> logModelMap = historyLoader.loadFromJSON();
                 Set<FilePath> paths = new DirectoryExplorer().exploreEndDir(new File(path));
 
                 /*paths = resolveFilesAtCorrectTimeIntervals(paths, dateTimeFrom, dateTimeTo);*/
@@ -71,10 +71,10 @@ public class Analyzer {
                 readLogs = filterLogsByDateRange(readLogs, dateTimeFrom, dateTimeTo);
 
 
-                calculateHash(logModelMap, readLogs, isRegexActive);
+                calculateHash(logModelMap, readLogs);
 
                 // FILL-UP THE HISTORY
-                historyLoader.generateHistoryJSON(logModelMap, isRegexActive);
+                historyLoader.generateHistoryJSON(logModelMap);
 
                 return logModelMap;
             }
@@ -242,9 +242,9 @@ public class Analyzer {
         return readLogsList;
     }
 
-    void calculateHash(Map<String, LogModel> logModelMap, List<LogModel> readLogs, boolean isRegexActive) {
+    void calculateHash(Map<String, LogModel> logModelMap, List<LogModel> readLogs) {
         for (LogModel model : readLogs) {
-            HashTool.generateHash(logModelMap, model, isRegexActive);
+            HashTool.generateHash(logModelMap, model);
         }
     }
 }

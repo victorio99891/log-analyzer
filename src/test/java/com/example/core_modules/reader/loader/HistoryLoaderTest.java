@@ -55,13 +55,6 @@ public class HistoryLoaderTest {
     }
 
     @Test
-    public void loadJsonRegexHistoryFile_fakeFileProvided_shouldLoadDataFromFile() {
-        Map<String, LogModel> map = historyLoader.loadJsonRegexHistoryFile(FAKE_HISTORY_FILE_NAME);
-
-        Assert.assertEquals(fakeMap.size(), map.size());
-    }
-
-    @Test
     public void loadJsonHistoryFile_nonExistingFile_shouldCatchIOException() {
         Map<String, LogModel> map = historyLoader.loadJsonHistoryFile("notExistingFile.json");
 
