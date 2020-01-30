@@ -1,9 +1,12 @@
 package com.example.core_modules.model.log;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.joda.time.DateTime;
+
+import java.util.Locale;
 
 
 @Getter
@@ -17,7 +20,9 @@ public class LogModel {
 
     private String hashId;
     private LogType type;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss.SSS", timezone = "UTC")
     private DateTime firstCallDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss.SSS", timezone = "UTC")
     private DateTime lastCallDate;
     private String origin;
     private String logFileDetails;
