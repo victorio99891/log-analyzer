@@ -107,20 +107,20 @@ public class Analyzer {
             log.info("Start filtering logs. Current collection size: " + logModelMap.size());
             for (LogModel logModel : logModelMap) {
                 if (dateFrom != null && dateTo == null) {
-                    if (logModel.getFirstCallDate().isAfter(dateFrom)) {
+                    if (logModel.getFirstCallDateTimeStamp().isAfter(dateFrom)) {
                         filteredLogs.add(logModel);
                     } else {
                         ++filteredCounter;
                     }
                 } else if (dateFrom == null && dateTo != null) {
-                    if (logModel.getFirstCallDate().isBefore(dateTo)) {
+                    if (logModel.getFirstCallDateTimeStamp().isBefore(dateTo)) {
                         filteredLogs.add(logModel);
                     } else {
                         ++filteredCounter;
                     }
                 } else if (dateFrom != null && dateTo != null) {
-                    if (logModel.getFirstCallDate().isAfter(dateFrom) &&
-                            logModel.getLastCallDate().isBefore(dateTo)) {
+                    if (logModel.getFirstCallDateTimeStamp().isAfter(dateFrom) &&
+                            logModel.getLastCallDateTimeStamp().isBefore(dateTo)) {
                         filteredLogs.add(logModel);
                     } else {
                         ++filteredCounter;
@@ -233,10 +233,11 @@ public class Analyzer {
             }
         }
         // SORT BY DATE
+        log.info("Sorting found logs by date in ascending order.");
         Collections.sort(readLogsList, new Comparator<LogModel>() {
             @Override
             public int compare(LogModel log1, LogModel log2) {
-                return log1.getFirstCallDate().compareTo(log2.getFirstCallDate());
+                return log1.getFirstCallDateTimeStamp().compareTo(log2.getFirstCallDateTimeStamp());
             }
         });
         return readLogsList;

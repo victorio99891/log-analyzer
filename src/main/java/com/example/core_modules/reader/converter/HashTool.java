@@ -22,10 +22,10 @@ public class HashTool {
 
         if (hashedCollection.containsKey(hash)) {
             LogModel modelFromCollection = hashedCollection.get(hash);
-            if (currentLogModel.getFirstCallDate().equals(modelFromCollection.getLastCallDate()) ||
-                    currentLogModel.getFirstCallDate().isAfter(modelFromCollection.getLastCallDate())) {
+            if (currentLogModel.getFirstCallDateTimeStamp().equals(modelFromCollection.getLastCallDateTimeStamp()) ||
+                    currentLogModel.getFirstCallDateTimeStamp().isAfter(modelFromCollection.getLastCallDateTimeStamp())) {
                 modelFromCollection.setOccurrences(modelFromCollection.getOccurrences() + 1);
-                modelFromCollection.setLastCallDate(currentLogModel.getFirstCallDate());
+                modelFromCollection.setLastCallDateTimeStamp(currentLogModel.getFirstCallDateTimeStamp());
             }
         } else {
             hashedCollection.put(hash, currentLogModel);

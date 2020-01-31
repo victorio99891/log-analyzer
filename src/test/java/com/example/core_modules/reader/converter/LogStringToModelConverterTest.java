@@ -30,8 +30,8 @@ public class LogStringToModelConverterTest {
         Assert.assertNotNull(logModel.getMessage());
         Assert.assertNotNull(logModel.getType());
         Assert.assertNotNull(logModel.getOrigin());
-        Assert.assertNotNull(logModel.getFirstCallDate());
-        Assert.assertNotNull(logModel.getLastCallDate());
+        Assert.assertNotNull(logModel.getFirstCallDateTimeStamp());
+        Assert.assertNotNull(logModel.getLastCallDateTimeStamp());
         Assert.assertEquals(1,logModel.getOccurrences());
     }
 

@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.joda.time.DateTime;
 
-import java.util.Locale;
-
 
 @Getter
 @Setter
@@ -21,22 +19,31 @@ public class LogModel {
     private String hashId;
     private LogType type;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss.SSS", timezone = "UTC")
-    private DateTime firstCallDate;
+    private DateTime firstCallDateString;
+    private DateTime firstCallDateTimeStamp;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss.SSS", timezone = "UTC")
-    private DateTime lastCallDate;
+    private DateTime lastCallDateString;
+    private DateTime lastCallDateTimeStamp;
     private String origin;
     private String logFileDetails;
-    private String message;
     private int occurrences;
+    private String message;
 
-    public LogModel(String hashId, LogType type, DateTime firstCallDate, DateTime lastCallDate, String origin, String logFileDetails, String message) {
+    public LogModel(String hashId, LogType type, DateTime firstCallDateTimeStamp, DateTime lastCallDateTimeStamp, String origin, String logFileDetails, String message) {
         this.hashId = hashId;
         this.type = type;
-        this.firstCallDate = firstCallDate;
-        this.lastCallDate = lastCallDate;
+        this.firstCallDateString = firstCallDateTimeStamp;
+        this.firstCallDateTimeStamp = firstCallDateTimeStamp;
+        this.lastCallDateString = lastCallDateTimeStamp;
+        this.lastCallDateTimeStamp = lastCallDateTimeStamp;
         this.origin = origin;
         this.logFileDetails = logFileDetails;
         this.message = message;
         this.occurrences = 1;
+    }
+
+    public void setLastCallDateTimeStamp(DateTime lastCallDateTimeStamp) {
+        this.lastCallDateString = lastCallDateTimeStamp;
+        this.lastCallDateTimeStamp = lastCallDateTimeStamp;
     }
 }

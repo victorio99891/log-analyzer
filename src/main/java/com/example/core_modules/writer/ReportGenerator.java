@@ -162,11 +162,11 @@ public class ReportGenerator {
 
         Cell firstOccurrenceDate = row.createCell(ReportColumn.FIRST_OCCURRENCE_TIME.getOrderNumber());
         firstOccurrenceDate.setCellStyle(dateCellStyle);
-        firstOccurrenceDate.setCellValue(model.getFirstCallDate().toDate());
+        firstOccurrenceDate.setCellValue(model.getFirstCallDateTimeStamp().toDate());
 
         Cell lastOccurrenceDate = row.createCell(ReportColumn.LAST_OCCURRENCE_TIME.getOrderNumber());
         lastOccurrenceDate.setCellStyle(dateCellStyle);
-        lastOccurrenceDate.setCellValue(model.getLastCallDate().toDate());
+        lastOccurrenceDate.setCellValue(model.getLastCallDateTimeStamp().toDate());
 
         final Cell messageCell = row.createCell(ReportColumn.MESSAGE.getOrderNumber());
         messageCell.setCellStyle(alignmentLeft);
