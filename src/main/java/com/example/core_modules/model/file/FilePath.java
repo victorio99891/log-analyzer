@@ -2,6 +2,7 @@ package com.example.core_modules.model.file;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.joda.time.DateTime;
 
 import java.util.Objects;
 
@@ -13,6 +14,7 @@ public class FilePath {
     private FileExtension extension;
     private String fullPath;
     private String relativePath;
+    private DateTime creationDate;
 
     public FilePath() {
     }

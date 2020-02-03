@@ -25,7 +25,7 @@ import java.util.zip.ZipOutputStream;
 public class AnalyzerTest {
 
     private static final String FAKE_LOG_FILE_NAME = "TEST_SysMonErrorTEST.log";
-    private static final String FAKE_ZIP_FILE_NAME = "TEST_SysMonErrorTESTlog_20090126120001.zip";
+    private static final String FAKE_ZIP_FILE_NAME = "TEST_SysMonErrorTEST.log_20090126120001.zip";
     private static final String TEST_LOG_STRING = "[LOG|ERROR|2009 January 23, 07:46:26 (955)|Server|/var/Server_4.log]\n" +
             "The incoming message is referring to non-existing outgoing message. No such linked id  in a database!\n" +
             "[END]\n" +
@@ -87,7 +87,7 @@ public class AnalyzerTest {
         Assert.assertEquals(1, map.size());
 
         String hash = new ArrayList<>(map.values()).get(0).getHashId();
-        Assert.assertEquals(4, map.get(hash).getOccurrences());
+        Assert.assertEquals(3, map.get(hash).getOccurrences());
     }
 
     @Test
@@ -101,7 +101,7 @@ public class AnalyzerTest {
         Assert.assertEquals(1, map.size());
 
         String hash = new ArrayList<>(map.values()).get(0).getHashId();
-        Assert.assertEquals(4, map.get(hash).getOccurrences());
+        Assert.assertEquals(3, map.get(hash).getOccurrences());
     }
 
     @Test
@@ -115,7 +115,7 @@ public class AnalyzerTest {
         Assert.assertEquals(1, map.size());
 
         String hash = new ArrayList<>(map.values()).get(0).getHashId();
-        Assert.assertEquals(4, map.get(hash).getOccurrences());
+        Assert.assertEquals(3, map.get(hash).getOccurrences());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class AnalyzerTest {
         Assert.assertEquals(1, map.size());
 
         String hash = new ArrayList<>(map.values()).get(0).getHashId();
-        Assert.assertEquals(4, map.get(hash).getOccurrences());
+        Assert.assertEquals(3, map.get(hash).getOccurrences());
     }
 
 }

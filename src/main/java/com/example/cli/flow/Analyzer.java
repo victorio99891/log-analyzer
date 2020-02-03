@@ -28,14 +28,15 @@ public class Analyzer {
 
     public Map<String, LogModel> analyzeWithoutTimeSpecified(String path) {
         Map<String, LogModel> logModelMap = historyLoader.loadFromJSON();
-        Set<FilePath> paths = new DirectoryExplorer().exploreEndDir(new File(path));
+        List<FilePath> paths = new DirectoryExplorer().exploreEndDir(new File(path));
 
         // READ LOGS
-        List<LogModel> readLogs = readLogsFromPaths(paths);
+        for (FilePath filePath : paths) {
+            List<LogModel> readLogs = readLogsFromPath(filePath);
 
-
-        // CALCULATE HASH
-        calculateHash(logModelMap, readLogs);
+            // CALCULATE HASH
+            calculateHash(logModelMap, readLogs);
+        }
 
         // FILL-UP THE HISTORY
         historyLoader.generateHistoryJSON(logModelMap);
@@ -55,23 +56,25 @@ public class Analyzer {
 
             if (isValid) {
                 Map<String, LogModel> logModelMap = historyLoader.loadFromJSON();
-                Set<FilePath> paths = new DirectoryExplorer().exploreEndDir(new File(path));
+                List<FilePath> paths = new DirectoryExplorer().exploreEndDir(new File(path));
 
-                /*paths = resolveFilesAtCorrectTimeIntervals(paths, dateTimeFrom, dateTimeTo);*/
-
-                // READ LOGS
-                List<LogModel> readLogs = readLogsFromPaths(paths);
                 // HISTORY
                 log.info("Filter logs from history...");
                 List<LogModel> historyList = filterLogsByDateRange(new ArrayList<>(logModelMap.values()), dateTimeFrom, dateTimeTo);
                 logModelMap = mapFromList(historyList);
 
-                // CURRENT
-                log.info("Filter current logs...");
-                readLogs = filterLogsByDateRange(readLogs, dateTimeFrom, dateTimeTo);
+                // READ LOGS
+                for (FilePath filePath : paths) {
+                    List<LogModel> readLogs = readLogsFromPath(filePath);
 
+                    // CURRENT
+                    log.info("Filter current logs...");
+                    readLogs = filterLogsByDateRange(readLogs, dateTimeFrom, dateTimeTo);
 
-                calculateHash(logModelMap, readLogs);
+                    // CALCULATE HASH
+                    calculateHash(logModelMap, readLogs);
+                }
+
 
                 // FILL-UP THE HISTORY
                 historyLoader.generateHistoryJSON(logModelMap);
@@ -134,52 +137,6 @@ public class Analyzer {
         return filteredLogs;
     }
 
-    /*Set<FilePath> resolveFilesAtCorrectTimeIntervals(Set<FilePath> paths, DateTime dateFrom, DateTime dateTo) throws ParseException {
-        Set<FilePath> filteredSet = new HashSet<>();
-        for (FilePath path : paths) {
-            if (FileExtension.ZIP.equals(path.getExtension())) {
-                StringTokenizer tokenizer = new StringTokenizer(path.getName(), "_");
-                String dateWithExtension = null;
-                for (int i = 0; i <= 1; i++) {
-                    tokenizer.nextToken();
-                }
-                dateWithExtension = tokenizer.nextToken();
-
-                DateTime fileRolledDate = resolveDateFromString(dateWithExtension.substring(0, dateWithExtension.length() - 4));
-
-                if (fileRolledDate != null) {
-                    if (dateFrom != null && dateTo != null) {
-                        if (fileRolledDate.isAfter(dateFrom) && fileRolledDate.isBefore(dateTo)) {
-                            filteredSet.add(path);
-                        }
-                    } else if (dateFrom != null) {
-                        if (fileRolledDate.isAfter(dateFrom)) {
-                            filteredSet.add(path);
-                        }
-                    } else if (dateTo != null) {
-                        if (fileRolledDate.isBefore(dateTo)) {
-                            filteredSet.add(path);
-                        }
-                    }
-                }
-            } else if (FileExtension.LOG.equals(path.getExtension())) {
-                if (dateFrom != null && dateTo != null) {
-                    if (dateFrom.isBeforeNow() && dateTo.isBeforeNow()) {
-                        filteredSet.add(path);
-                    }
-                } else if (dateFrom != null) {
-                    filteredSet.add(path);
-                } else if (dateTo != null) {
-                    if (dateTo.isBeforeNow()) {
-                        filteredSet.add(path);
-                    }
-                }
-            }
-        }
-
-        return filteredSet;
-    }*/
-
     boolean validateDateAndTime(DateTime dateTimeFrom, DateTime dateTimeTo) {
 
         boolean result = false;
@@ -218,20 +175,21 @@ public class Analyzer {
         return dateTime;
     }
 
-    List<LogModel> readLogsFromPaths(Set<FilePath> paths) {
+    //TODO: REFACTOR THIS CODE TO LOAD SINGLE FILE AND MAKE ALL OPERATIONS ON SINGLE FILE !!!!!!!!!!
+    //SORT THIS FILE PATHS BY CREATION DATE
+    List<LogModel> readLogsFromPath(FilePath path) {
         List<LogModel> readLogsList = new ArrayList<>();
-        for (FilePath path : paths) {
-            //TODO: Differentiate two responsibilities is necessary -> generating hash is something different that reading log list !!!
-            if (FileExtension.LOG.equals(path.getExtension())) {
-                final List<LogModel> modelList = logFileReader.read(path.getFullPath());
-                readLogsList.addAll(modelList);
-                log.info("[LOG FILE] Found " + modelList.size() + " ERROR or FATAL logs in file: " + path.getFullPath());
-            } else if (FileExtension.ZIP.equals(path.getExtension())) {
-                final List<LogModel> modelList = zipFileReader.read(path.getFullPath());
-                readLogsList.addAll(modelList);
-                log.info("[ZIP FILE] Found " + modelList.size() + " ERROR or FATAL logs in file: " + path.getFullPath());
-            }
+
+        if (FileExtension.LOG.equals(path.getExtension())) {
+            final List<LogModel> modelList = logFileReader.read(path.getFullPath());
+            readLogsList.addAll(modelList);
+            log.info("[LOG FILE] Found " + modelList.size() + " ERROR or FATAL logs in file: " + path.getFullPath());
+        } else if (FileExtension.ZIP.equals(path.getExtension())) {
+            final List<LogModel> modelList = zipFileReader.read(path.getFullPath());
+            readLogsList.addAll(modelList);
+            log.info("[ZIP FILE] Found " + modelList.size() + " ERROR or FATAL logs in file: " + path.getFullPath());
         }
+
         // SORT BY DATE
         log.info("Sorting found logs by date in ascending order.");
         Collections.sort(readLogsList, new Comparator<LogModel>() {

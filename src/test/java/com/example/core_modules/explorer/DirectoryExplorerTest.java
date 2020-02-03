@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
+import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -53,7 +54,7 @@ public class DirectoryExplorerTest {
     public void exploreEndDir_directoryListFilesNull_shouldReturnEmptySet() {
         when(directory.listFiles()).thenReturn(null);
 
-        Set<FilePath> filePaths = this.directoryExplorer.exploreEndDir(directory);
+        List<FilePath> filePaths = this.directoryExplorer.exploreEndDir(directory);
 
         Assert.assertTrue(filePaths.isEmpty());
     }
@@ -65,7 +66,7 @@ public class DirectoryExplorerTest {
         when(file.isFile()).thenReturn(true);
         when(file.getName()).thenReturn(DirectoryExplorer.ERROR_LOG_FILE_PATTERN);
 
-        Set<FilePath> filePaths = this.directoryExplorer.exploreEndDir(directory);
+        List<FilePath> filePaths = this.directoryExplorer.exploreEndDir(directory);
 
         Assert.assertEquals(1, filePaths.size());
     }
@@ -77,7 +78,7 @@ public class DirectoryExplorerTest {
         when(file.isDirectory()).thenReturn(true);
         when(file.getName()).thenReturn(DirectoryExplorer.ERROR_LOG_FILE_PATTERN);
 
-        Set<FilePath> filePaths = this.directoryExplorer.exploreEndDir(directory);
+        List<FilePath> filePaths = this.directoryExplorer.exploreEndDir(directory);
 
         Assert.assertEquals(0, filePaths.size());
     }
