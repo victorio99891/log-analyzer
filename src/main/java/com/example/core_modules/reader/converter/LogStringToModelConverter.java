@@ -4,6 +4,7 @@ import com.example.core_modules.config.GlobalConfigurationHandler;
 import com.example.core_modules.model.log.LogModel;
 import com.example.core_modules.model.log.LogStructure;
 import com.example.core_modules.model.log.LogType;
+import com.example.core_modules.reader.converter.exception.WrongLogStructureException;
 import org.joda.time.DateTime;
 
 import java.text.ParseException;
@@ -53,6 +54,9 @@ public class LogStringToModelConverter {
         if (message != null && message.length() >= 32750) {
             message = message.substring(0, 32750);
         }
+
+        String messageWithStackTrace = getSection(tokenList, LogStructure.MESSAGE).concat(getSection(tokenList, LogStructure.STACK_TRACE));
+
         return new LogModel(
                 null,
                 logType,
@@ -60,7 +64,8 @@ public class LogStringToModelConverter {
                 dateTime,
                 fileName,
                 tokenList.get(LogStructure.DETAILS.section()),
-                message
+                message,
+                messageWithStackTrace
         );
     }
 
@@ -72,7 +77,22 @@ public class LogStringToModelConverter {
         while (tokenizer.hasMoreTokens()) {
             tokenList.add(tokenizer.nextToken());
         }
+
+        mockMessageOrStackTrace(tokenList);
+
         return tokenList;
+    }
+
+    static void mockMessageOrStackTrace(List<String> tokenList) {
+
+        if (tokenList.get(LogStructure.MESSAGE.section()).equals(LogModel.LOG_END_DELIMITER)) {
+            tokenList.add(LogStructure.MESSAGE.section(), "");
+        }
+
+        if (tokenList.get(LogStructure.END_DELIMITER.section()).equals(LogModel.LOG_END_DELIMITER) && tokenList.size() == 7) {
+            tokenList.add("");
+        }
+
     }
 
     static String getSection(List<String> tokenList, LogStructure structure) {
@@ -80,6 +100,11 @@ public class LogStringToModelConverter {
         if (section != null && section.trim().isEmpty()) {
             section = section.trim();
         }
+
+        if (null == section) {
+            throw new WrongLogStructureException("Problem with parsing log structure. Exact cause: Missing section " + structure.name());
+        }
+
         return section;
     }
 

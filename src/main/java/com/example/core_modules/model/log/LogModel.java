@@ -1,6 +1,7 @@
 package com.example.core_modules.model.log;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,9 +28,11 @@ public class LogModel {
     private String origin;
     private String logFileDetails;
     private int occurrences;
-    private String message;
+    private String fullLogMessage;
+    @JsonIgnore
+    private String messageWithStackTrace;
 
-    public LogModel(String hashId, LogType type, DateTime firstCallDateTimeStamp, DateTime lastCallDateTimeStamp, String origin, String logFileDetails, String message) {
+    public LogModel(String hashId, LogType type, DateTime firstCallDateTimeStamp, DateTime lastCallDateTimeStamp, String origin, String logFileDetails, String fullLogMessage, String messageWithStackTrace) {
         this.hashId = hashId;
         this.type = type;
         this.firstCallDateString = firstCallDateTimeStamp;
@@ -38,7 +41,8 @@ public class LogModel {
         this.lastCallDateTimeStamp = lastCallDateTimeStamp;
         this.origin = origin;
         this.logFileDetails = logFileDetails;
-        this.message = message;
+        this.fullLogMessage = fullLogMessage;
+        this.messageWithStackTrace = messageWithStackTrace;
         this.occurrences = 1;
     }
 

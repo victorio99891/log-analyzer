@@ -19,8 +19,17 @@ public class HashToolTest {
     @Before
     public void setUp() {
         collection = new HashMap<>();
-        this.logModelNow = new LogModel(null, LogType.ERROR, DateTime.now(), DateTime.now(), "fakeServer", "fakeDetails", "fakeMessage");
-        this.logModelLater = new LogModel(null, LogType.ERROR, DateTime.now().plusDays(5), DateTime.now().plusDays(5), "fakeServer", "fakeDetails", "fakeMessage");
+        this.logModelNow = new LogModel(null,
+                LogType.ERROR,
+                DateTime.now(),
+                DateTime.now(),
+                "fakeServer", "fakeDetails", "fakeMessage", "fakeMessageFakeStack");
+
+        this.logModelLater = new LogModel(null,
+                LogType.ERROR,
+                DateTime.now().plusDays(5),
+                DateTime.now().plusDays(5),
+                "fakeServer", "fakeDetails", "fakeMessage", "fakeMessageFakeStack");
     }
 
     @Test

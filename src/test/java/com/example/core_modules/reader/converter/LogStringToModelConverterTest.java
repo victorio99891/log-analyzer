@@ -27,7 +27,7 @@ public class LogStringToModelConverterTest {
 
         Assert.assertNotNull(logModel);
         Assert.assertNull(logModel.getHashId());
-        Assert.assertNotNull(logModel.getMessage());
+        Assert.assertNotNull(logModel.getFullLogMessage());
         Assert.assertNotNull(logModel.getType());
         Assert.assertNotNull(logModel.getOrigin());
         Assert.assertNotNull(logModel.getFirstCallDateTimeStamp());

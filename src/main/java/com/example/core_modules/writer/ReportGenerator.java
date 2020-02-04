@@ -170,7 +170,7 @@ public class ReportGenerator {
 
         final Cell messageCell = row.createCell(ReportColumn.MESSAGE.getOrderNumber());
         messageCell.setCellStyle(alignmentLeft);
-        messageCell.setCellValue(model.getMessage());
+        messageCell.setCellValue(model.getFullLogMessage());
 
         final Cell applicationCell = row.createCell(ReportColumn.APPLICATION.getOrderNumber());
         applicationCell.setCellStyle(alignmentCenter);

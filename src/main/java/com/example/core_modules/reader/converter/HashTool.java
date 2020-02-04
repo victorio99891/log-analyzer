@@ -16,7 +16,7 @@ public class HashTool {
     }
 
     public static void generateHash(Map<String, LogModel> hashedCollection, LogModel currentLogModel) {
-        String hash = hash(currentLogModel.getMessage());
+        String hash = hash(currentLogModel.getMessageWithStackTrace());
 
         currentLogModel.setHashId(hash);
 

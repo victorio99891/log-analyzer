@@ -24,7 +24,7 @@ public class ReportGeneratorTest {
     @Before
     public void setUp() {
         logModelSet = new HashSet<>();
-        logModel = new LogModel("fakeHash", LogType.ERROR, DateTime.now(), DateTime.now(), "fakeServer", "fakeDetails", "fakeMessage");
+        logModel = new LogModel("fakeHash", LogType.ERROR, DateTime.now(), DateTime.now(), "fakeServer", "fakeDetails", "fakeMessage", "fakeMessageFakeStack");
         logModelSet.add(logModel);
 
         reportGenerator = new ReportGenerator();

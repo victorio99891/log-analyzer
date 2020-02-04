@@ -25,7 +25,11 @@ public class HistoryLoaderTest {
         if (historyFile.exists()) {
             historyFile.delete();
         }
-        LogModel fakeLog = new LogModel("fakeHash", LogType.ERROR, DateTime.now(), DateTime.now(), "fakeOrigin", "fakeDetails", "fakeMessage");
+        LogModel fakeLog = new LogModel("fakeHash",
+                LogType.ERROR,
+                DateTime.now(),
+                DateTime.now(),
+                "fakeOrigin", "fakeDetails", "fakeMessage", "fakeMessageFakeStack");
         fakeMap = new HashMap<>();
         fakeMap.put("fakeHash", fakeLog);
         if (!historyFile.exists()) {

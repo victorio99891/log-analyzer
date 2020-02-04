@@ -7,7 +7,8 @@ public enum LogStructure {
     ORIGIN(3),
     DETAILS(4),
     MESSAGE(5),
-    END_DELIMITER(6);
+    END_DELIMITER(6),
+    STACK_TRACE(7);
 
     private int sectionNumber;
 
