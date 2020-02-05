@@ -179,7 +179,7 @@ public class Analyzer {
     //SORT THIS FILE PATHS BY CREATION DATE
     List<LogModel> readLogsFromPath(FilePath path) {
         List<LogModel> readLogsList = new ArrayList<>();
-
+        log.info("Start reading all entries from path...");
         if (FileExtension.LOG.equals(path.getExtension())) {
             final List<LogModel> modelList = logFileReader.read(path.getFullPath());
             readLogsList.addAll(modelList);

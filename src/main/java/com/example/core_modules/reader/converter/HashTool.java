@@ -39,10 +39,10 @@ public class HashTool {
                 .getRegexFilterList();
 
         for (String regex : regexFilterList) {
-            edited = edited.replaceAll(regex, "#REGEX#");
+            edited = edited.replaceAll(regex, "");
         }
 
-        edited = edited.replaceAll("\\d", "X");
+        edited = edited.replaceAll("\\d", "");
         edited = edited.replaceAll("\\s+", "");
 
         return DigestUtils.sha256Hex(edited);

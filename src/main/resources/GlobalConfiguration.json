@@ -1,6 +1,9 @@
 {
-  "logDelimiterPattern": "*#-!-#*",
+  "logDelimiterPattern": "|######|",
   "regexFilterList": [
+    "(?<=\\[Error-ID: \\d\\d\\d-\\d\\d\\d\\d\\]).*",
+    "([a-z]+[0-9]|[0-9]+[a-z])[a-z0-9]*",
+    "(?s)\\{.*\\}(?=.*(\\[END\\]|$))"
   ],
   "historyFileName" : "LogHistory.json"
 }
