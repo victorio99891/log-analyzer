@@ -3,11 +3,11 @@ package com.example.core_modules.reader;
 import com.example.core_modules.exception.UnsupportedFileFormatException;
 import com.example.core_modules.model.log.LogModel;
 
-import java.util.List;
+import java.util.Map;
 
 abstract class FileReader {
 
-    public abstract List<LogModel> read(String path);
+    public abstract int read(String path, Map<String, LogModel> logModelMap);
 
     protected void checkIfLogFileOnPath(String path) throws UnsupportedFileFormatException {
         if (!path.endsWith(".log")) {

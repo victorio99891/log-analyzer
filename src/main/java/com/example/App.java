@@ -19,12 +19,9 @@ public class App {
         try {
             RunnerCLI.getInstance().run(args);
         } catch (SystemExiter.UnexpectedExitException e) {
-            log.error(e.getCause().getMessage());
-            //TODO: Uncomment to print whole stacktrace when application fails
-            // log.error("\n{}", ExceptionUtils.getStackTrace(e.getCause()));
+            log.error("", e.getCause());
         } catch (Exception e) {
-            e.printStackTrace();
-//            log.error("\n{}", ExceptionUtils.getStackTrace(e.getCause()));
+            log.error("", e);
         }
 
         stopwatch.stop();

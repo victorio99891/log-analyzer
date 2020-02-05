@@ -15,6 +15,7 @@ import java.util.Map;
 @Slf4j
 public class HistoryLoader {
     public Map<String, LogModel> loadJsonHistoryFile(String fileName) {
+        log.info("----------------------------------");
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
         try {

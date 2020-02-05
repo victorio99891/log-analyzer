@@ -4,34 +4,28 @@ import com.example.core_modules.config.GlobalConfigurationHandler;
 import com.example.core_modules.exception.UnsupportedFileFormatException;
 import com.example.core_modules.model.log.LogModel;
 import com.example.core_modules.model.structure.Pair;
+import com.example.core_modules.reader.converter.HashTool;
 import com.example.core_modules.reader.converter.LogStringToModelConverter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.nio.file.Paths;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public final class LogFileReader extends FileReader {
 
     @Override
-    public List<LogModel> read(String path) {
-
-        List<LogModel> logModelList = new ArrayList<>();
-
+    public int read(String path, Map<String, LogModel> logModelMap) {
+        int processedLogsCounter = 0;
         try {
             super.checkIfLogFileOnPath(path);
 
             File file = new File(path);
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 
-            List<Pair<String, String>> logsString = readByPath(reader);
-
-            for (Pair<String, String> log : logsString) {
-                logModelList.add(LogStringToModelConverter.convert(log.getFirst(), log.getSecond(), Paths.get(path).getFileName().toString()));
-            }
+            processedLogsCounter = readAndHash(reader, path, logModelMap);
 
         } catch (UnsupportedFileFormatException e1) {
             log.error(e1.toString());
@@ -41,13 +35,12 @@ public final class LogFileReader extends FileReader {
             log.error("Cannot parse date in log." + e3.toString());
         }
 
-        return logModelList;
+        return processedLogsCounter;
     }
 
-
-    public List<Pair<String, String>> readByPath(BufferedReader reader) throws IOException {
+    public int readAndHash(BufferedReader reader, String path, Map<String, LogModel> logModelMap) throws IOException, ParseException {
+        int counter = 0;
         String delimiter = GlobalConfigurationHandler.getInstance().config().getLogDelimiterPattern();
-        List<Pair<String, String>> logs = new ArrayList<>();
         String line;
         StringBuilder builder = null;
         String originalLog = null;
@@ -55,7 +48,9 @@ public final class LogFileReader extends FileReader {
 
             if (line.contains(LogModel.LOG_START_DELIMITER)) {
                 if (builder != null) {
-                    logs.add(new Pair<>(builder.toString(), originalLog));
+                    Pair<String, String> pair = new Pair<>(builder.toString(), originalLog);
+                    analyseAndHash(path, pair, logModelMap);
+                    counter++;
                 }
                 builder = new StringBuilder();
                 originalLog = "";
@@ -85,9 +80,19 @@ public final class LogFileReader extends FileReader {
         }
 
         if (builder != null && !builder.toString().trim().isEmpty()) {
-            logs.add(new Pair<>(builder.toString(), originalLog));
+            Pair<String, String> pair = new Pair<>(builder.toString(), originalLog);
+            analyseAndHash(path, pair, logModelMap);
+            counter++;
         }
 
-        return logs;
+        return counter;
+    }
+
+    public void analyseAndHash(final String path, final Pair<String, String> log, Map<String, LogModel> logModelMap) throws ParseException {
+        final LogModel logModel =
+                LogStringToModelConverter.convert(log.getFirst(), log.getSecond(),
+                        Paths.get(path).getFileName().toString());
+
+        HashTool.generateHash(logModelMap, logModel);
     }
 }

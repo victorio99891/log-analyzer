@@ -21,6 +21,7 @@ public final class DirectoryExplorer {
     public List<FilePath> exploreEndDir(File directory) {
         List<FilePath> paths = new ArrayList<>();
 
+        log.info("----------------------------------");
         log.info("Resolving all paths in passed directory...");
 
         try {
