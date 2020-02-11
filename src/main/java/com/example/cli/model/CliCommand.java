@@ -68,15 +68,15 @@ public enum CliCommand {
     }
 
     public static void printHelp() {
-        System.out.println("Available commands:\n");
+        System.out.println("\nAvailable commands:\n");
         for (CliCommand cmd : CliCommand.values()) {
             if (!cmd.isHasArgument()) {
                 System.out.printf("%-20s %-30s  %-10s\n", cmd.getName(), cmd.getFlag(), cmd.getDescription());
             } else {
                 System.out.printf("%-20s %-30s  %-10s\n", cmd.getName(), cmd.getFlag() + " [argument]", cmd.getDescription());
             }
-
         }
+        System.out.println("\n");
     }
 
 }
