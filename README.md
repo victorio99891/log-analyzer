@@ -86,3 +86,25 @@ Create Excel report file based on LogHistory.json file:
 
 Analyse logs under provided path where logs dates are before '--dateto' and create Excel report based on LogHistory.json and current analysis:
 > java -jar target/log-analyzer-0.1-SNAPSHOT-STANDALONE.jar --path "/var/logs" --dateto 20101201120000
+
+
+## GlobalConfiguration.json:
+This configuration can be found under *'resources/'* directory inside project or in JAR archive under *'BOOT-INF/classes/'*
+```
+{
+  "logDelimiterPattern": "|######|",
+  "regexFilterList": [
+    "(?<=\\[Error-ID: \\d\\d\\d-\\d\\d\\d\\d\\]).*",
+    "([a-z]+[0-9]|[0-9]+[a-z])[a-z0-9]*",
+    "(?s)\\{.*\\}(?=.*(\\[END\\]|$))"
+  ],
+  "historyFileName" : "LogHistory.json"
+}
+```
+
+**logDelimiterPattern** - this pattern is responsible for exchange pipe operator in cut log files
+
+**regexFilterList** - array of regular expressions responsible for filtering logs in every analysis
+
+**historyFileName** - string which describes name of history file after analysis
+
