@@ -44,3 +44,34 @@ and *settings.xml from mvn_settings_runConfigs subdirectory*
 6. Now your dependencies will be resolved to those defined in pom.xml and project would be packaged into target/ directory.
 
 ## How to use:
+**Available commands:**
+
+| Action | Flag | Description |
+| --- | --- | --- |
+|Help |              --help |                         Shows available commands as also their description and briefly information about software version|
+|Directory Path |    --path [argument]|               Specify the path to the directory to scan. |
+|Date From |         --datefrom [argument]|           Specify the date with time where log analysis should be STARTED. Format: yyyyMMddHHmmss Example: 20190125121544 for 25-01-2019 12:15:44.|
+|Date To |           --dateto [argument]|             Specify the date with time where log analysis should be FINISHED. Format: yyyyMMddHHmmss Example: 20190125121544 for 25-01-2019 12:15:44.|
+|Generate report |   --report|                        Generates Excel report file.|
+
+**Examples of allowed flag combinations:** <br/><br/>
+Show help:
+> java -jar target/log-analyzer-0.1-SNAPSHOT-STANDALONE.jar --help
+
+Analyse logs under provided path:
+> java -jar target/log-analyzer-0.1-SNAPSHOT-STANDALONE.jar --path "/var/logs" 
+
+Analyse logs under provided path where logs dates are after '--datefrom':
+> java -jar target/log-analyzer-0.1-SNAPSHOT-STANDALONE.jar --path "/var/logs" --datefrom 20101001120000
+
+Analyse logs under provided path where logs dates are before '--dateto':
+> java -jar target/log-analyzer-0.1-SNAPSHOT-STANDALONE.jar --path "/var/logs" --dateto 20101201120000
+
+Analyse logs under provided path where logs dates are between time interval '--datefrom' and '--dateto':
+> java -jar target/log-analyzer-0.1-SNAPSHOT-STANDALONE.jar --path "/var/logs" --datefrom 20101001120000 --dateto 20101201120000
+
+Create Excel report file based on LogHistory.json file:
+> java -jar target/log-analyzer-0.1-SNAPSHOT-STANDALONE.jar --report
+
+Analyse logs under provided path where logs dates are before '--dateto' and create Excel report based on LogHistory.json and current analysis:
+> java -jar target/log-analyzer-0.1-SNAPSHOT-STANDALONE.jar --path "/var/logs" --dateto 20101201120000
