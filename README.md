@@ -48,8 +48,8 @@ and *settings.xml from mvn_settings_runConfigs subdirectory*
 
 | Action | Flag | Description |
 | --- | --- | --- |
-|Help |              --help |                         Shows available commands as also their description and briefly information about software version|
-|Directory Path |    --path [argument]|               Specify the path to the directory to scan. |
+|Help |              --help |                         Shows available commands as also their description and briefly information about software version. |
+|Directory Path |    --path [argument]|               Specify the path to the directory to scan. In case of any whitespaces in path use double quotes. |
 |Date From |         --datefrom [argument]|           Specify the date with time where log analysis should be STARTED. Format: yyyyMMddHHmmss Example: 20190125121544 for 25-01-2019 12:15:44.|
 |Date To |           --dateto [argument]|             Specify the date with time where log analysis should be FINISHED. Format: yyyyMMddHHmmss Example: 20190125121544 for 25-01-2019 12:15:44.|
 |Generate report |   --report|                        Generates Excel report file.|

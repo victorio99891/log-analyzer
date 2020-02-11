@@ -17,7 +17,7 @@ public enum CliCommand {
     DIRECTORY_PATH("Directory Path",
             "--path",
             true,
-            "Specify the path to the directory to scan."),
+            "Specify the path to the directory to scan. In case of any whitespaces in path use double quotes."),
     DATE_FROM("Date From",
             "--datefrom",
             true,
